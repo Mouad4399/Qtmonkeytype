@@ -50,6 +50,8 @@ ApplicationWindow{
             anchors.centerIn:parent
             width:textMetrics.width
             height:textMetrics.height
+            highlightMoveDuration: 100
+            highlightMoveVelocity: 0.7
             TextMetrics {
                 id: textMetrics
                 text:'time left to memorise all words'
