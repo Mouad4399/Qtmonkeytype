@@ -26,8 +26,8 @@ AbstractButton {
     property string imageColor: ''
     property alias imageSize: innerImage.sourceSize
     property bool enabledEffect:button.buttonText!==''
-    property color disabledBgColor: "grey"
-    property color disabledImageColor: "grey"
+    property color disabledBgColor: "transparent"
+    property color disabledImageColor: "transparent"
     property var scaleTo: 0.96
     scale: state === "Pressed" ? scaleTo : 1.0
     onEnabledChanged: state = ""

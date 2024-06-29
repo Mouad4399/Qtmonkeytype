@@ -5,17 +5,13 @@ import QtQuick.Controls
 import './Components'
 
 ApplicationWindow{
+    id:root_app
     width:942
     height:500
     visible:true
     color:'#323437'
-    MouseArea{
-        anchors.fill:parent
-        onClicked:{
-            console.log('hello thoser')
-        }
-    }
-
+    title:'Qtmonkeytype'
+    font.family:'Roboto Mono'
 
     // Rectangle{
     //     anchors.fill:parent
@@ -55,14 +51,15 @@ ApplicationWindow{
             anchors.margins:34
             spacing:20
             ColumnLayout{
-                Component.onCompleted:{
-                    console.log(height)
-                }
+                // enabled:!textEdit.focus
+                // Component.onCompleted:{
+                //     console.log(height)
+                // }
+                opacity:textEdit.active ? 0 : 1
                 Layout.fillWidth:true
                 spacing:30
                 RowLayout{
                     id:title
-                    visible:!textEdit.focus
                     Layout.fillWidth:true
                     spacing:6
                     ColorImage{
@@ -177,7 +174,6 @@ ApplicationWindow{
                 }
                 Rectangle{
                     id:mainMenu
-                    visible:!textEdit.focus
                     Layout.alignment:Qt.AlignCenter
                     Layout.preferredWidth:parent.width*0.9
                     Layout.maximumWidth:870
@@ -384,7 +380,6 @@ ApplicationWindow{
                     }
                 }
                 RowButton{
-                    visible:!textEdit.focus
                     hoverColor:'white'
                     pressColor:'#646669'
                     // implicitWidth:content.width
@@ -405,283 +400,353 @@ ApplicationWindow{
                         checked=!checked
                     }
                 }
+                Behavior on opacity{
+                    NumberAnimation {
+                        duration: 300
+                        easing.type: Easing.InOutQuad
+                    }
+                }
+                PropertyChanges{ enabled:!textEdit.active}
+                
+            }
+            Rectangle{
+                id:content_textEdit
+                Layout.fillWidth:true
+                Layout.fillHeight:true
+                color:"transparent"
                 Text {
-                    id: counter
-                    Layout.topMargin:127
-                    Layout.alignment:Qt.AlignLeft | Qt.AlignBottom
-                    visible:textEdit.focus
-                    text:"0/50"
-                    font.pointSize: 20
+                    id: wordCounter
+                    // property int wordCount :0
+                    anchors.bottom:parent.top
+                    anchors.bottomMargin:10
+                    opacity:!textEdit.active ? 0:1
+                    text: textEdit.cursorPosition + "/" + textEdit.length
+                    font.pointSize: 16
                     color: "#e2b714"
                     horizontalAlignment: Text.AlignLeft
                     font.family: "Roboto Mono"
                     font.weight: 600
                 }
-            }
-            TextEdit{
-                id:textEdit
-                Layout.fillWidth:true
-                // anchors{
-                //     left:parent.left
-                //     right:parent.right
-                //     // bottom:parent.bottom
-                //     top:parent.top
-                //     margins:50
-                // }
-                // width:refText.implicitWidth
-                // anchors.topMargin:10
-                wrapMode: TextEdit.Wrap
-                textFormat: TextEdit.RichText
-                text:"<p style='line-height:120%'><font color='#646669'>"+"get new become will each program go group large first great make get child end small could each place system help want most interest fact keep those little mean want here know could even make very over come set line about those present after may increase follow now old"+"</font></p>"
-                // text:"
-                //         <!DOCTYPE html>
-                //         <html>
-                //         <head>
-                //         <style>
-                //         p{
-                //         color:'#646669' ;
-                //         line-height:220%;
-                //         }
+                Flickable {
+                    id: flick
 
-                //         </style>
-                //         </head>
-                //         <body>
-                //         <p>get new become will each program go group large first great make get child end small could each place system help want most interest fact keep those little mean want here know could even make very over come set line about those present after may increase follow now old</p>
-                //         </body>
-                //         </html>
+                    // width: 300; height: 200;
+                    // Layout.fillWidth:true
+                    anchors.fill:parent
+                    // height:200
+                    contentWidth: textEdit.contentWidth
+                    contentHeight: textEdit.contentHeight
+                    clip: true
+                    interactive:false
+                    boundsBehavior: Flickable.StopAtBounds
+                    flickableDirection: Flickable.VerticalFlick
 
 
-                //         "
-                font.family:'Roboto Mono'
-                font.pointSize:18
-                Component.onCompleted:{
-                    currentWord=getText(cursorPosition,cursorPosition+getText(cursorPosition,text.length-1).indexOf(" "))
-                    // console.log(currentWord+">")
-                }
-                // color:'white'
-                // color:"transparent"
-                // focus:true
-                // echoMode:TextInput.NoEcho
-                // selectedTextColor:'green'
-                // inputMethodHints :Qt.ImhrefText
-                // echoMode:TextInput.Password
-                // passwordCharacter : " "
-                // cursorVisible: false
-                property int rlength:0
-                // property var mistakes:{
-                //     'test':''
-                // }
-                // Keys.onBackPressed:{
-                //         console.log('hdf')
-                //     }
-                // Keys.onPressed: {
-                //     if (event.key === Qt.Key_Backspace) {
-                //         console.log("Backspace pressed")
-                //         // Additional handling for backspace can be done here
-                //     }
-                // }
-                // overwriteMode :true
-                // Rectangle{
-                //     anchors.left:parent.cursorDelegate.right
-                //     height:20
-                //     width:2
-                //     color:'blue'
-                //     x:parent.cursorPosition*14
-                //     Behavior on x{ NumberAnimation { easing.type:Easing.OutQuart ;duration:500 } }
-
-                //     }
-                cursorDelegate: Rectangle{
-                    visible:false
-                }
-                // activeFocusOnPress :true
-                onEditingFinished:{
-                    console.log('helo mar7aa')
-                }
-                selectionColor : "#e2b714"
-                Rectangle {
-                    id:cursorDelegate_
-                    width: 2
-                    height:27
-                    color: 'yellow'
-                    radius: 3
-                    x:parent.cursorRectangle.x
-                    y:parent.cursorRectangle.y
-                    Behavior on x {
-                        NumberAnimation {
-                            easing.type: Easing.OutQuart
-                            duration: 200
-                        }
+                    function ensureVisible(r)
+                    {
+                        if (contentX >= r.x)
+                            contentX = r.x;
+                        else if (contentX+width <= r.x+r.width)
+                            contentX = r.x+r.width-width;
+                        if (contentY >= r.y)
+                            contentY = r.y ;
+                        else if ((contentY+height)/2 <= r.y+r.height)
+                            contentY = r.y+r.height-height/2;
                     }
-                    // Component.onCompleted:{
-                    //     console.log('jhel')
-                    // }
-                    // SequentialAnimation on opacity { running: true; loops: Animation.Infinite;
-                    //     NumberAnimation { to: 0; duration: 500; easing.type: "OutQuad"}
-                    //     NumberAnimation { to: 1; duration: 500; easing.type: "InQuad"}
-                    // }
-                    // Behavior on y { NumberAnimation { easing.type:Easing.OutQuart } }
-                }
-                // Behavior on cursorPosition { NumberAnimation { target:'cursorDelegate.x' ;easing.type:Easing.OutQuart ;duration:500 } }
-                // onCursorRectangleChanged: {
-                //     console.log('jhl')
-                // }
-                Keys.onPressed:event=>{
-                    // selectWord()
+                    
+                    TextEdit{
+                        
+                        id:textEdit
+                        // Layout.fillWidth:true
+                        width:flick.width
+                        onCursorRectangleChanged: flick.ensureVisible(cursorRectangle)
+                        selectByMouse :false
+                        focus:true
+                        // anchors{
+                        //     left:parent.left
+                        //     right:parent.right
+                        //     // bottom:parent.bottom
+                        //     top:parent.top
+                        //     margins:50
+                        // }
+                        // width:refText.implicitWidth
+                        // anchors.topMargin:10
+                        wrapMode: TextEdit.Wrap
+                        textFormat: TextEdit.RichText
+                        text:"<p style='line-height:100%;color:#646669' >"+"get new become will each program go group large first great make get child end small could each place system help want most interest fact keep those little mean want here know could even make very over come set line about those present after may increase follow now old"+"</p>"
+                        
+                        // text:"
+                        //         <!DOCTYPE html>
+                        //         <html>
+                        //         <head>
+                        //         <style>
+                        //         p{
+                        //         color:'#646669' ;
+                        //         line-height:220%;
+                        //         }
 
-                    // event.accepted=true
-                    // Check if Ctrl key is pressed
-                    if (event.modifiers & Qt.ControlModifier) {
-                        if (event.key === Qt.Key_Backspace) {
-                            if(cursorPosition===currentWordIndex){
+                        //         </style>
+                        //         </head>
+                        //         <body>
+                        //         <p>get new become will each program go group large first great make get child end small could each place system help want most interest fact keep those little mean want here know could even make very over come set line about those present after may increase follow now old</p>
+                        //         </body>
+                        //         </html>
+
+
+                        //         "
+                        font.family:'Roboto Mono'
+                        font.pointSize:18
+                        Component.onCompleted:{
+                            currentWord=getText(cursorPosition,cursorPosition+getText(cursorPosition,text.length-1).indexOf(" "))
+                            // cursorPosition=1
+                            // console.log(currentWord+">")
+                        }
+                        // color:'white'
+                        // color:"transparent"
+                        // focus:true
+                        // echoMode:TextInput.NoEcho
+                        // selectedTextColor:'green'
+                        // inputMethodHints :Qt.ImhrefText
+                        // echoMode:TextInput.Password
+                        // passwordCharacter : " "
+                        // cursorVisible: false
+                        property int rlength:0
+                        // property var mistakes:{
+                        //     'test':''
+                        // }
+                        // Keys.onBackPressed:{
+                        //         console.log('hdf')
+                        //     }
+                        // Keys.onPressed: {
+                        //     if (event.key === Qt.Key_Backspace) {
+                        //         console.log("Backspace pressed")
+                        //         // Additional handling for backspace can be done here
+                        //     }
+                        // }
+                        // overwriteMode :true
+                        // Rectangle{
+                        //     anchors.left:parent.cursorDelegate.right
+                        //     height:20
+                        //     width:2
+                        //     color:'blue'
+                        //     x:parent.cursorPosition*14
+                        //     Behavior on x{ NumberAnimation { easing.type:Easing.OutQuart ;duration:500 } }
+
+                        //     }
+                        cursorDelegate: Rectangle{
+                            visible:false
+                        }
+                        // activeFocusOnPress :true
+                        onEditingFinished:{
+                            console.log('helo mar7aa')
+                        }
+                        selectionColor : "#e2b714"
+                        Rectangle {
+                            id:cursorDelegate_
+                            width: 2
+                            height:32
+                            color: 'yellow'
+                            radius: 3
+                            x:parent.cursorRectangle.x
+                            y:parent.cursorRectangle.y
+                            Behavior on x {
+                                NumberAnimation {
+                                    easing.type: Easing.OutQuart
+                                    duration: 200
+                                }
+                            }
+                            // Component.onCompleted:{
+                            //     console.log('jhel')
+                            // }
+                            SequentialAnimation on opacity { 
+                                alwaysRunToEnd:true
+                                running: !textEdit.active; 
+                                loops: Animation.Infinite;
+                                NumberAnimation { to: 0; duration: 500; easing.type: "OutQuad"}
+                                NumberAnimation { to: 1; duration: 500; easing.type: "InQuad"}
+                            }
+                            // Behavior on y { NumberAnimation { easing.type:Easing.OutQuart } }
+                        }
+                        // Behavior on cursorPosition { NumberAnimation { target:'cursorDelegate.x' ;easing.type:Easing.OutQuart ;duration:500 } }
+                        // onCursorRectangleChanged: {
+                        //     console.log('jhl')
+                        // }
+                        Keys.onPressed:event=>{
+                            active=true
+                            // selectWord()
+
+                            // event.accepted=true
+                            // Check if Ctrl key is pressed
+                            if (event.modifiers & Qt.ControlModifier) {
+                                if (event.key === Qt.Key_Backspace) {
+                                    if(cursorPosition===currentWordIndex){
+                                        event.accepted=true
+                                        return
+                                    }
+
+                                    // console.log(getText(0,cursorPosition) + ">")
+                                    // var delspace = getText(0,cursorPosition).trim().lastIndexOf(" ")
+                                    // console.log(delspace)
+                                    // var resetText=getText(delspace+1,cursorPosition)
+                                    var writtenText=getText(currentWordIndex,cursorPosition)
+                                    if(writtenText.length >= currentWord.length){
+                                        // remove(currentWordIndex,cursorPosition)
+                                        insert(cursorPosition,"<font color='#646669'>"+currentWord+"</font>")
+                                        cursorPosition=cursorPosition-currentWord.length
+                                    }else{
+                                        insert(cursorPosition,"<font color='#646669'>"+writtenText+"</font>")
+                                        cursorPosition=cursorPosition-writtenText.length
+                                    }
+                                    // console.log(resetText)
+                                    // insert(cursorPosition,getText(0,cursorPosition))
+                                    // event.accepted=true
+                                    // console.log('ctrl back : '+ lastspace+" "+typedText.text.length)
+                                    // event.accepted = true
+                                    // if (lastspace-typedText.text.length+1!==0){
+                                        // Trim any trailing whitespace
+
+                                    // var text = text.trimEnd();
+
+                                    // Find the position of the last space
+                                    // let lastSpaceIndex = typedText.text.trim().lastIndexOf("> <");
+
+                                    // console.log(typedText.text)
+                                    // // If there's no space, it means there's only one word, so the result would be empty
+                                    // if (lastSpaceIndex === -1) {
+                                    //     console.log('wipe')
+                                    //     typedText.text=''
+                                    // }
+
+                                    // for(i)
+
+                                    // typedText.text = typedText.text.slice(0,lastSpaceIndex+1)
+                                    // console.log(typedText.text + "| l : "+typedText.text.length)
+                                    return
+                                }
+                                return
+                                if (event.matches(StandardKey.Undo)) {
+                                    event.accepted = true
+                                    return
+                                }
+                                if (event.matches(StandardKey.Undo)) {
+                                    event.accepted = true
+                                    return
+                                }
+                                // Disable Ctrl+A (Select All)
+                                if (event.key === Qt.Key_A) {
+                                    event.accepted = true
+                                    return
+                                }
+                                return
+                            }
+                            if (event.key === Qt.Key_Left){
+                                // event.accepted = true
+                                return
+                            }
+                            if (event.key === Qt.Key_Up){
+                                // event.accepted = true
+                                return
+                            }
+                            if (event.key === Qt.Key_Right){
+                                // event.accepted = true
+                                return
+                            }
+                            if (event.key === Qt.Key_Down){
+                                // event.accepted = true
+                                return
+                            }
+                            if (event.key === Qt.Key_Backspace){
+
+                                if(cursorPosition===currentWordIndex){
+                                    event.accepted=true
+                                    return
+                                }
+
+                                if(getText(currentWordIndex,cursorPosition).length > currentWord.length){
+                                    return
+                                }else{
+                                    // remove(cursorPosition,cursorPosition)
+                                    insert(cursorPosition,"<font color='#646669'>"+currentWord[cursorPosition-currentWordIndex-1]+"</font>")
+                                    cursorPosition--
+                                }
+                                // console.log('I didd back')
+                                // if (typedText.text[typedText.text.length-1] ===">"){
+
+                                //     typedText.text = typedText.text.slice(0, -26)
+                                // }
+                                // else{
+                                //     typedText.text = typedText.text.slice(0, -1)
+                                // }
+                                return
+                            }
+                            if (event.key === Qt.Key_Escape){
+                                // console.log('helo')
+                                focus=false
+
+                            }
+                            if (event.key === Qt.Key_Space){
+                                console.log('I didd space '+ lastspace)
+                                // console.log(getText(currentWordIndex,cursorPosition) + ">")
+                                // console.log(currentWord + ">")
+                                // if(getText(currentWordIndex,cursorPosition) === currentWord){
+                                //     console.log('naaah')
+                                // }
+                                // var delspace = getText(cursorPosition,text.length-1).indexOf(" ")
+                                // console.log(delspace)
+                                // console.log(getText(cursorPosition,text.length-1))
+                                cursorPosition = cursorPosition+ getText(cursorPosition,text.length-1).indexOf(" ")+1
+                                // remove(cursorPosition,cursorPosition+1)
+                                currentWord=getText(cursorPosition,cursorPosition+getText(cursorPosition,text.length-1).indexOf(" "))
+                                currentWordIndex=cursorPosition
+                                // console.log(currentWord+">")
                                 event.accepted=true
                                 return
                             }
-
-                            // console.log(getText(0,cursorPosition) + ">")
-                            // var delspace = getText(0,cursorPosition).trim().lastIndexOf(" ")
-                            // console.log(delspace)
-                            // var resetText=getText(delspace+1,cursorPosition)
-                            var writtenText=getText(currentWordIndex,cursorPosition)
-                            if(writtenText.length >= currentWord.length){
-                                // remove(currentWordIndex,cursorPosition)
-                                insert(cursorPosition,"<font color='#646669'>"+currentWord+"</font>")
-                                cursorPosition=cursorPosition-currentWord.length
-                            }else{
-                                insert(cursorPosition,"<font color='#646669'>"+writtenText+"</font>")
-                                cursorPosition=cursorPosition-writtenText.length
+                            if (getText(cursorPosition,cursorPosition+1)===" "){
+                                console.log('spce')
+                                insert(cursorPosition,"<font color='#7e2a33'>"+event.text+"</font>")
+                                event.accepted =true
+                                return
                             }
-                            // console.log(resetText)
-                            // insert(cursorPosition,getText(0,cursorPosition))
-                            // event.accepted=true
-                            // console.log('ctrl back : '+ lastspace+" "+typedText.text.length)
-                            // event.accepted = true
-                            // if (lastspace-typedText.text.length+1!==0){
-                                // Trim any trailing whitespace
 
-                            // var text = text.trimEnd();
 
-                            // Find the position of the last space
-                            // let lastSpaceIndex = typedText.text.trim().lastIndexOf("> <");
-
-                            // console.log(typedText.text)
-                            // // If there's no space, it means there's only one word, so the result would be empty
-                            // if (lastSpaceIndex === -1) {
-                            //     console.log('wipe')
-                            //     typedText.text=''
-                            // }
-
-                            // for(i)
-
-                            // typedText.text = typedText.text.slice(0,lastSpaceIndex+1)
-                            // console.log(typedText.text + "| l : "+typedText.text.length)
-                            return
+                            var eventText=event.text !==" "?event.text : "&nbsp;"
+                            // console.log('I typed :<'+textEdit.length+'>')
+                            console.log(cursorPosition)
+                            var charColor=event.text === getText(cursorPosition,cursorPosition+1) ? "#d1d0c5":"#ca4754"
+                            // insert(currentWordIndex,"<u>")
+                            insert(cursorPosition,"<font color='"+charColor+"'>"+(getText(cursorPosition,cursorPosition+1))+"</font>")
+                            // insert(cursorPosition,"<font color='red'>"+eventText+"</font>")
+                            remove(cursorPosition,cursorPosition+1)
+                            console.log(cursorPosition)
+                            // cursorPosition++
+                            // console.log('cursor :<'+cursorPosition+'>')
+                            // // textEdit.insert(textEdit.length,event.text)
+                            event.accepted =true
+                            // addedChar=true
                         }
-                        return
-                        if (event.matches(StandardKey.Undo)) {
-                            event.accepted = true
-                            return
+                        property string currentWord
+                        property int currentWordIndex
+                        property int lastspace:0
+                        property bool addedChar:false
+
+                        property bool active:false
+
+                        MouseArea{
+                            anchors.fill:parent
+                            hoverEnabled:true
+                            onPositionChanged: {
+                                
+                                // if (!containsMouse)
+                                textEdit.active=false
+                            }
+                            onClicked:{
+                                // console.log('hello my name is mouseare')
+                                // textEdit.focus=true
+                            }
                         }
-                        if (event.matches(StandardKey.Undo)) {
-                            event.accepted = true
-                            return
-                        }
-                        // Disable Ctrl+A (Select All)
-                        if (event.key === Qt.Key_A) {
-                            event.accepted = true
-                            return
-                        }
-                        return
                     }
-                    if (event.key === Qt.Key_Left){
-                        // event.accepted = true
-                        return
-                    }
-                    if (event.key === Qt.Key_Up){
-                        // event.accepted = true
-                        return
-                    }
-                    if (event.key === Qt.Key_Right){
-                        // event.accepted = true
-                        return
-                    }
-                    if (event.key === Qt.Key_Down){
-                        // event.accepted = true
-                        return
-                    }
-                    if (event.key === Qt.Key_Backspace){
-
-                        if(cursorPosition===currentWordIndex){
-                            event.accepted=true
-                            return
-                        }
-
-                        if(getText(currentWordIndex,cursorPosition).length > currentWord.length){
-                            return
-                        }else{
-                            // remove(cursorPosition,cursorPosition)
-                            insert(cursorPosition,"<font color='#646669'>"+currentWord[cursorPosition-currentWordIndex-1]+"</font>")
-                            cursorPosition--
-                        }
-                        // console.log('I didd back')
-                        // if (typedText.text[typedText.text.length-1] ===">"){
-
-                        //     typedText.text = typedText.text.slice(0, -26)
-                        // }
-                        // else{
-                        //     typedText.text = typedText.text.slice(0, -1)
-                        // }
-                        return
-                    }
-                    if (event.key === Qt.Key_Escape){
-                        // console.log('helo')
-                        focus=false
-
-                    }
-                    if (event.key === Qt.Key_Space){
-                        console.log('I didd space '+ lastspace)
-                        // console.log(getText(currentWordIndex,cursorPosition) + ">")
-                        // console.log(currentWord + ">")
-                        // if(getText(currentWordIndex,cursorPosition) === currentWord){
-                        //     console.log('naaah')
-                        // }
-                        // var delspace = getText(cursorPosition,text.length-1).indexOf(" ")
-                        // console.log(delspace)
-                        // console.log(getText(cursorPosition,text.length-1))
-                        cursorPosition = cursorPosition+ getText(cursorPosition,text.length-1).indexOf(" ")+1
-                        // remove(cursorPosition,cursorPosition+1)
-                        currentWord=getText(cursorPosition,cursorPosition+getText(cursorPosition,text.length-1).indexOf(" "))
-                        currentWordIndex=cursorPosition
-                        // console.log(currentWord+">")
-                        event.accepted=true
-                        return
-                    }
-                    if (getText(cursorPosition,cursorPosition+1)===" "){
-                        console.log('spce')
-                        insert(cursorPosition,"<font color='#7e2a33'>"+event.text+"</font>")
-                        event.accepted =true
-                        return
-                    }
-
-
-                    var eventText=event.text !==" "?event.text : "&nbsp;"
-                    // console.log('I typed :<'+textEdit.length+'>')
-                    console.log(cursorPosition)
-                    var charColor=event.text === getText(cursorPosition,cursorPosition+1) ? "#d1d0c5":"#ca4754"
-                    // insert(currentWordIndex,"<u>")
-                    insert(cursorPosition,"<font color='"+charColor+"'>"+(getText(cursorPosition,cursorPosition+1))+"</font>")
-                    // insert(cursorPosition,"<font color='red'>"+eventText+"</font>")
-                    remove(cursorPosition,cursorPosition+1)
-                    console.log(cursorPosition)
-                    // cursorPosition++
-                    // console.log('cursor :<'+cursorPosition+'>')
-                    // // textEdit.insert(textEdit.length,event.text)
-                    event.accepted =true
-                    // addedChar=true
                 }
-                property string currentWord
-                property int currentWordIndex
-                property int lastspace:0
-                property bool addedChar:false
             }
             Item{
                 Layout.fillWidth:true
