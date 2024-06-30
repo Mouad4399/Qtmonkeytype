@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
+import QtCharts 
 
 import './Components'
 
@@ -12,6 +13,11 @@ ApplicationWindow{
     color:'#323437'
     title:'Qtmonkeytype'
     font.family:'Roboto Mono'
+    property font roboto: ({
+        family: "Roboto Mono",
+        pointSize: 10,
+        weight:600
+    })
 
     // Rectangle{
     //     anchors.fill:parent
@@ -730,7 +736,24 @@ ApplicationWindow{
                         property int lastspace:0
                         property bool addedChar:false
 
-                        property bool active:false
+                        property bool active:textEdit.cursorPostion!==textEdit.length
+                        property var results:[34,53,59]
+
+                        Timer {
+                            id:timer
+                            interval: 1000
+                            property int timeStep: 0
+                            repeat: true
+                            running: textEdit.active
+                            // triggeredOnStart:true
+                            property int clicks:0
+                            onTriggered: {
+                                textEdit.results[timeStep]=textEdit.clicks
+                                series1.append(timeStep,clicks)
+                                timeStep++
+                                clicks=0
+                            }
+                        }
 
                         MouseArea{
                             anchors.fill:parent
@@ -741,9 +764,287 @@ ApplicationWindow{
                                 textEdit.active=false
                             }
                             onClicked:{
+                                timer.clicks++
                                 // console.log('hello my name is mouseare')
                                 // textEdit.focus=true
                             }
+                        }
+                    }
+                }
+            }
+            Popup {
+                id:finished_test
+                Component.onCompleted:{
+                    open()
+                }
+                parent:Overlay.overlay
+                anchors.centerIn:parent
+                modal: false
+                // dim:true
+                focus: true
+                closePolicy: Popup.NoAutoClose
+                padding: 0
+                onOpened: {
+                    // Disable interaction with the current page
+                    // stack.busy
+                }
+
+                onClosed: {
+                    // Re-enable interaction with the current page
+                }
+                
+                enter: Transition {
+                    // grow_fade_in
+                    NumberAnimation {
+                        property: "opacity"
+                        from: 0.0
+                        to: 1.0
+                        easing.type: Easing.InOutQuad
+                        duration: 150
+                    }
+                }
+
+                exit: Transition {
+                    // shrink_fade_out
+                    NumberAnimation {
+                        property: "opacity"
+                        from: 1.0
+                        to: 0.0
+                        easing.type: Easing.InOutQuad
+                        duration: 150
+                    }
+                }
+                background: Rectangle {
+                    radius: 6
+                    color: '#d7d7d7'
+                    // color:Qt.rgba(0,0,0,0)
+                }
+
+                Rectangle {
+                    implicitWidth: root_app.width
+                    implicitHeight: root_app.height 
+                    color: '#323437'
+                    MouseArea{
+                        anchors.fill:parent
+                        hoverEnabled:true
+                        onPositionChanged: {
+                            
+                            // if (!containsMouse)
+                            // textEdit.active=false
+                        }
+                        onClicked:{
+
+                            timer.clicks++
+                            // console.log('hello my name is mouseare')
+                            // textEdit.focus=true
+                        }
+                    }
+
+                    ColumnLayout{
+                        anchors.fill:parent
+                        anchors.margins:34
+                        spacing:30
+                        RowLayout{
+                            Layout.fillWidth:true
+                            spacing:6
+                            ColorImage{
+                                // Layout.alignment:Qt.AlignCenter
+                                Layout.topMargin:5
+                                source:'./images/logo.svg'
+                                color:'#e2b714'
+                                sourceSize.height:23
+                            }
+                            Text{
+                                Layout.alignment:Qt.AlignTop
+                                text:"<font color='#a6e214'>Qt</font>monkeytype"
+                                textFormat: TextEdit.RichText
+                                font.family:'Lexend Deca'
+                                font.weight:600
+                                font.pointSize:25
+                                color:'#d1d0c5'
+                                Text{
+                                    anchors.top:parent.top
+                                    anchors.left:parent.left
+                                    anchors.topMargin:-2
+                                    anchors.leftMargin:40
+                                    text:"monkey see"
+                                    font.family:'Lexend Deca'
+                                    font.pointSize:9
+                                    color:'#646669'
+                                }
+                            }
+                            RowLayout{
+                                Layout.leftMargin:10
+                                Layout.fillWidth:true
+                                Layout.fillHeight:true
+                                spacing:20
+                                Button{
+                                    hoverColor:'white'
+                                    pressColor:'#646669'
+                                    Layout.alignment:Qt.AlignBottom
+                                    implicitHeight:monkeytype_name.height-15
+                                    implicitWidth:28
+                                    imageSource:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M528 448H48c-26.5 0-48-21.5-48-48V112c0-26.5 21.5-48 48-48h480c26.5 0 48 21.5 48 48v288c0 26.5-21.5 48-48 48zM128 180v-40c0-6.6-5.4-12-12-12H76c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-336 96v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-336 96v-40c0-6.6-5.4-12-12-12H76c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm288 0v-40c0-6.6-5.4-12-12-12H172c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h232c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12z"/></svg>'
+                                    imageSize.width:20
+                                    buttonText:''
+                                    imageColor:"#646669"
+                                    color:"#323437"
+                                }
+                                Button{
+                                    hoverColor:'white'
+                                    pressColor:'#646669'
+                                    Layout.alignment:Qt.AlignBottom
+                                    implicitHeight:monkeytype_name.height-15
+                                    implicitWidth:28
+                                    imageSource:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M528 448H112c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h416c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm64-320c-26.5 0-48 21.5-48 48 0 7.1 1.6 13.7 4.4 19.8L476 239.2c-15.4 9.2-35.3 4-44.2-11.6L350.3 85C361 76.2 368 63 368 48c0-26.5-21.5-48-48-48s-48 21.5-48 48c0 15 7 28.2 17.7 37l-81.5 142.6c-8.9 15.6-28.9 20.8-44.2 11.6l-72.3-43.4c2.7-6 4.4-12.7 4.4-19.8 0-26.5-21.5-48-48-48S0 149.5 0 176s21.5 48 48 48c2.6 0 5.2-.4 7.7-.8L128 416h384l72.3-192.8c2.5 .4 5.1 .8 7.7 .8 26.5 0 48-21.5 48-48s-21.5-48-48-48z"/></svg>'
+                                    imageSize.width:20
+                                    buttonText:''
+                                    imageColor:"#646669"
+                                    color:"#323437"
+                                }
+                                Button{
+                                    hoverColor:'white'
+                                    pressColor:'#646669'
+                                    Layout.alignment:Qt.AlignBottom
+                                    implicitHeight:monkeytype_name.height-15
+                                    implicitWidth:28
+                                    imageSource:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M20 424.2h20V279.8H20c-11 0-20-9-20-20V212c0-11 9-20 20-20h112c11 0 20 9 20 20v212.2h20c11 0 20 9 20 20V492c0 11-9 20-20 20H20c-11 0-20-9-20-20v-47.8c0-11 9-20 20-20zM96 0C56.2 0 24 32.2 24 72s32.2 72 72 72 72-32.2 72-72S135.8 0 96 0z"/></svg>'
+                                    imageSize.height:height-8
+                                    buttonText:''
+                                    imageColor:"#646669"
+                                    color:"#323437"
+                                }
+                                Button{
+                                    hoverColor:'white'
+                                    pressColor:'#646669'
+                                    Layout.alignment:Qt.AlignBottom
+                                    implicitHeight:monkeytype_name.height-15
+                                    implicitWidth:28
+                                    imageSource:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8.2-74.3-7.8-109.2 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L88.7 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4 .6 11.2 5.5 14L67.3 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8.2 74.3 7.8 109.2 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"/></svg>'
+                                    imageSize.height:height-8
+                                    buttonText:''
+                                    imageColor:"#646669"
+                                    color:"#323437"
+                                }
+
+                                Item{
+                                    Layout.fillWidth:true
+                                }
+                                Button{
+                                    hoverColor:'white'
+                                    pressColor:'#646669'
+                                    Layout.alignment:Qt.AlignBottom
+                                    implicitHeight:monkeytype_name.height-15
+                                    implicitWidth:28
+                                    imageSource:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M224 512c35.3 0 64-28.7 64-64H160c0 35.4 28.7 64 64 64zm215.4-149.7c-19.3-20.8-55.5-52-55.5-154.3 0-77.7-54.5-139.9-127.9-155.2V32c0-17.7-14.3-32-32-32s-32 14.3-32 32v20.8C118.6 68.1 64.1 130.3 64.1 208c0 102.3-36.2 133.5-55.5 154.3-6 6.5-8.7 14.2-8.6 21.7 .1 16.4 13 32 32.1 32h383.8c19.1 0 32-15.6 32.1-32 .1-7.6-2.6-15.3-8.6-21.7z"/></svg>'
+                                    imageSize.height:height-8
+                                    buttonText:''
+                                    imageColor:"#646669"
+                                    color:"#323437"
+                                }
+                                Button{
+                                    hoverColor:'white'
+                                    pressColor:'#646669'
+                                    Layout.alignment:Qt.AlignBottom
+                                    implicitHeight:monkeytype_name.height-15
+                                    implicitWidth:28
+                                    imageSource:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M313.6 304c-28.7 0-42.5 16-89.6 16-47.1 0-60.8-16-89.6-16C60.2 304 0 364.2 0 438.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-25.6c0-74.2-60.2-134.4-134.4-134.4zM400 464H48v-25.6c0-47.6 38.8-86.4 86.4-86.4 14.6 0 38.3 16 89.6 16 51.7 0 74.9-16 89.6-16 47.6 0 86.4 38.8 86.4 86.4V464zM224 288c79.5 0 144-64.5 144-144S303.5 0 224 0 80 64.5 80 144s64.5 144 144 144zm0-240c52.9 0 96 43.1 96 96s-43.1 96-96 96-96-43.1-96-96 43.1-96 96-96z"/></svg>'
+                                    imageSize.height:height-8
+                                    buttonText:''
+                                    imageColor:"#646669"
+                                    color:"#323437"
+                                }
+                            }
+                        }
+                        ChartView {
+                            id: chartView
+                            antialiasing: true
+                            animationOptions: ChartView.SeriesAnimations
+                            Layout.fillWidth:true
+                            Layout.preferredHeight:80
+                            Layout.fillHeight:true
+                            // plotAreaColor :'green'
+                            backgroundColor :"transparent"
+                            
+                            // Layout.margins:-100
+
+                            // anchors { fill: parent; margins: -15 }
+                            margins { right: 0; bottom: 0; left: 0; top: 0 }
+
+                            // titleFont: 'Roboto Mono'
+                            legend.visible: false
+
+                            ValueAxis {
+                                id: axisX
+                                // labelsAngle :-45
+                                min: 0
+                                max: timer.timeStep-1
+                                tickCount :timer.timeStep
+                                labelsColor:'#646669'
+                                labelFormat: "%d"
+                                gridLineColor :'black'
+                                labelsFont:roboto
+                                // visible: false
+                            }
+                            ValueAxis {
+                                id: axisY
+                                min: 0
+                                max: 14
+                                labelsColor:'#646669'
+                                labelFormat: "%d"
+                                gridLineColor :'black'
+                                labelsFont:roboto
+                                // labelsFont:'Roboto Mono'
+                                // visible:false
+                            }
+                            // AreaSeries {
+                            //     borderColor: Qt.rgba(0, 0, 0, 0)
+                            //     borderWidth: 0
+                            //     // brush.color: "yellow"
+                            //     axisX: axisX
+                            //     axisY: axisY
+
+                            //     upperSeries: series1
+                            // }
+
+                            SplineSeries {
+                                id: series1
+                                axisX: axisX
+                                axisY: axisY
+                                name: "Besoin personnel"
+                                color: 'yellow'
+                                useOpenGL: true
+                                width: 3
+                                capStyle: Qt.RoundCap
+                                onHovered:(point,state)=> {
+                                }
+                                
+                            }
+                            // AreaSeries {
+                            //     borderColor: Qt.rgba(0, 0, 0, 0)
+                            //     borderWidth: 0
+                            //     brush: "yellow"
+                            //     axisX: axisX
+                            //     axisY: axisY
+                            //     upperSeries: series2
+                            // }
+
+                            // LineSeries {
+                            //     id: series2
+                            //     axisX: axisX
+                            //     axisY: axisY
+                            //     // name: "Besoin personnel"
+                            //     color: '#14C9C9'
+                            //     useOpenGL: true
+                            //     width: 2
+                            //     capStyle: Qt.RoundCap
+                            //     onHovered: (point,state)=>{
+                            //     }
+                            // }
+                        }
+
+                        Item{
+                            Layout.fillHeight:true
                         }
                     }
                 }
