@@ -479,7 +479,7 @@ ApplicationWindow{
                         // anchors.topMargin:10
                         wrapMode: TextEdit.Wrap
                         textFormat: TextEdit.RichText
-                        text:"<p style='line-height:100%;color:#646669' >"+"get new become will each program go group large first great make get child end small could each place system help want most interest fact keep those little mean want here know could even make very over come set line about those present after may increase follow now old"+"</p>"
+                        text:"<p style='line-height:100%;color:#646669' >"+"get new become will each program go group large first great make get child end"+"</p>"
                         
                         // text:"
                         //         <!DOCTYPE html>
@@ -544,7 +544,8 @@ ApplicationWindow{
                         }
                         // activeFocusOnPress :true
                         onEditingFinished:{
-                            console.log('helo mar7aa')
+                            // console.log('edit finished')
+                            // console.log(length)
                         }
                         selectionColor : "#e2b714"
                         Rectangle {
@@ -691,9 +692,17 @@ ApplicationWindow{
 
                             }
                             if (event.key === Qt.Key_Space){
-                                console.log('I didd space '+ lastspace)
-                                // console.log(getText(currentWordIndex,cursorPosition) + ">")
+                                if(cursorPosition-currentWordIndex===currentWord.length){
+                                    // console.log("yas")
+                                    // word is written and not skipped
+                                    writtenWords++
+                                }
+                                // console.log('I didd space '+ lastspace)
                                 // console.log(currentWord + ">")
+                                // console.log(currentWord.length + ">")
+                                // console.log(cursorPosition-currentWordIndex===currentWord.length)
+                                // console.log("curpos: "+ cursorPosition)
+                                // console.log(getText(currentWordIndex,cursorPosition) + ">")
                                 // if(getText(currentWordIndex,cursorPosition) === currentWord){
                                 //     console.log('naaah')
                                 // }
@@ -704,7 +713,10 @@ ApplicationWindow{
                                 // remove(cursorPosition,cursorPosition+1)
                                 currentWord=getText(cursorPosition,cursorPosition+getText(cursorPosition,text.length-1).indexOf(" "))
                                 currentWordIndex=cursorPosition
+
+
                                 // console.log(currentWord+">")
+                                
                                 event.accepted=true
                                 return
                             }
@@ -718,16 +730,20 @@ ApplicationWindow{
 
                             var eventText=event.text !==" "?event.text : "&nbsp;"
                             // console.log('I typed :<'+textEdit.length+'>')
-                            console.log(cursorPosition)
+                            // console.log(cursorPosition)
                             var charColor=event.text === getText(cursorPosition,cursorPosition+1) ? "#d1d0c5":"#ca4754"
                             // insert(currentWordIndex,"<u>")
                             insert(cursorPosition,"<font color='"+charColor+"'>"+(getText(cursorPosition,cursorPosition+1))+"</font>")
                             // insert(cursorPosition,"<font color='red'>"+eventText+"</font>")
                             remove(cursorPosition,cursorPosition+1)
-                            console.log(cursorPosition)
+                            // console.log(cursorPosition)
                             // cursorPosition++
                             // console.log('cursor :<'+cursorPosition+'>')
                             // // textEdit.insert(textEdit.length,event.text)
+                            if(cursorPosition === length){
+                                finished_test.open()
+                                active=false
+                            }
                             event.accepted =true
                             // addedChar=true
                         }
@@ -736,22 +752,42 @@ ApplicationWindow{
                         property int lastspace:0
                         property bool addedChar:false
 
-                        property bool active:textEdit.cursorPostion!==textEdit.length
-                        property var results:[34,53,59]
+                        property bool active:false
+                        property int writtenWords:0
+                        // property bool active:cursorPosition!==textEdit.length
+                        // property var results:[34,53,59]
 
                         Timer {
                             id:timer
                             interval: 1000
-                            property int timeStep: 0
+                            property int timeStep: 1
                             repeat: true
                             running: textEdit.active
                             // triggeredOnStart:true
-                            property int clicks:0
+                            property int maxSpeed:0
                             onTriggered: {
-                                textEdit.results[timeStep]=textEdit.clicks
-                                series1.append(timeStep,clicks)
+                                // if( timeStep===3){
+                                //     return
+                                // }
+                                // textEdit.results[timeStep]=textEdit.clicks
+
+                                // for cpm
+                                // var speed=Math.round((textEdit.cursorPosition/timeStep)*60)
+                                // series1.append(timeStep,speed)
+                                // if(speed> maxSpeed){
+                                //     maxSpeed=speed
+                                // }
+
+                                // for wpm
+                                var speed=Math.round((textEdit.writtenWords/timeStep)*60)
+                                // console.log(speed)
+                                series1.append(timeStep,speed)
+                                if(speed> maxSpeed){
+                                    maxSpeed=speed
+                                }
+
                                 timeStep++
-                                clicks=0
+                                // clicks=0
                             }
                         }
 
@@ -764,7 +800,7 @@ ApplicationWindow{
                                 textEdit.active=false
                             }
                             onClicked:{
-                                timer.clicks++
+                                // timer.clicks++
                                 // console.log('hello my name is mouseare')
                                 // textEdit.focus=true
                             }
@@ -774,9 +810,9 @@ ApplicationWindow{
             }
             Popup {
                 id:finished_test
-                Component.onCompleted:{
-                    open()
-                }
+                // Component.onCompleted:{
+                //     open()
+                // }
                 parent:Overlay.overlay
                 anchors.centerIn:parent
                 modal: false
@@ -787,6 +823,7 @@ ApplicationWindow{
                 onOpened: {
                     // Disable interaction with the current page
                     // stack.busy
+                    // console.log(textEdit.active)
                 }
 
                 onClosed: {
@@ -824,26 +861,10 @@ ApplicationWindow{
                     implicitWidth: root_app.width
                     implicitHeight: root_app.height 
                     color: '#323437'
-                    MouseArea{
-                        anchors.fill:parent
-                        hoverEnabled:true
-                        onPositionChanged: {
-                            
-                            // if (!containsMouse)
-                            // textEdit.active=false
-                        }
-                        onClicked:{
-
-                            timer.clicks++
-                            // console.log('hello my name is mouseare')
-                            // textEdit.focus=true
-                        }
-                    }
-
                     ColumnLayout{
                         anchors.fill:parent
                         anchors.margins:34
-                        spacing:30
+                        spacing:80
                         RowLayout{
                             Layout.fillWidth:true
                             spacing:6
@@ -956,92 +977,332 @@ ApplicationWindow{
                                 }
                             }
                         }
-                        ChartView {
-                            id: chartView
-                            antialiasing: true
-                            animationOptions: ChartView.SeriesAnimations
+                        GridLayout{
+                            id:gridLayout
                             Layout.fillWidth:true
                             Layout.preferredHeight:80
-                            Layout.fillHeight:true
-                            // plotAreaColor :'green'
-                            backgroundColor :"transparent"
+                            columns:5
+                            rows:3
+                            columnSpacing: 0
+                            rowSpacing: 0
                             
-                            // Layout.margins:-100
 
-                            // anchors { fill: parent; margins: -15 }
-                            margins { right: 0; bottom: 0; left: 0; top: 0 }
-
-                            // titleFont: 'Roboto Mono'
-                            legend.visible: false
-
-                            ValueAxis {
-                                id: axisX
-                                // labelsAngle :-45
-                                min: 0
-                                max: timer.timeStep-1
-                                tickCount :timer.timeStep
-                                labelsColor:'#646669'
-                                labelFormat: "%d"
-                                gridLineColor :'black'
-                                labelsFont:roboto
-                                // visible: false
-                            }
-                            ValueAxis {
-                                id: axisY
-                                min: 0
-                                max: 14
-                                labelsColor:'#646669'
-                                labelFormat: "%d"
-                                gridLineColor :'black'
-                                labelsFont:roboto
-                                // labelsFont:'Roboto Mono'
-                                // visible:false
-                            }
-                            // AreaSeries {
-                            //     borderColor: Qt.rgba(0, 0, 0, 0)
-                            //     borderWidth: 0
-                            //     // brush.color: "yellow"
-                            //     axisX: axisX
-                            //     axisY: axisY
-
-                            //     upperSeries: series1
-                            // }
-
-                            SplineSeries {
-                                id: series1
-                                axisX: axisX
-                                axisY: axisY
-                                name: "Besoin personnel"
-                                color: 'yellow'
-                                useOpenGL: true
-                                width: 3
-                                capStyle: Qt.RoundCap
-                                onHovered:(point,state)=> {
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                Layout.alignment:Qt.AlignTop
+                                // Layout.rowSpan: 1
+                                // Layout.columnSpan: 1
+                                Layout.row:0
+                                Layout.column:0
+                                spacing: -10
+                                Text {
+                                    text:"wpm"
+                                    font.pointSize: 23
+                                    color: "#646669"
+                                    horizontalAlignment: Text.AlignLeft
+                                    font.family: "Roboto Mono"
+                                    font.weight: 500
                                 }
-                                
-                            }
-                            // AreaSeries {
-                            //     borderColor: Qt.rgba(0, 0, 0, 0)
-                            //     borderWidth: 0
-                            //     brush: "yellow"
-                            //     axisX: axisX
-                            //     axisY: axisY
-                            //     upperSeries: series2
-                            // }
+                                Text {
+                                    text:"69"
+                                    font.pointSize: 40
+                                    color: "#e2b714"
+                                    horizontalAlignment: Text.AlignLeft
+                                    font.family: "Roboto Mono"
+                                    font.weight: 500
+                                }
 
-                            // LineSeries {
-                            //     id: series2
-                            //     axisX: axisX
-                            //     axisY: axisY
-                            //     // name: "Besoin personnel"
-                            //     color: '#14C9C9'
-                            //     useOpenGL: true
-                            //     width: 2
-                            //     capStyle: Qt.RoundCap
-                            //     onHovered: (point,state)=>{
-                            //     }
-                            // }
+                            }
+
+                            ChartView {
+                                id: chartView
+                                antialiasing: true
+                                animationOptions: ChartView.SeriesAnimations
+                                Layout.alignment:Qt.AlignTop
+                                Layout.fillWidth:true
+                                Layout.rowSpan: 2
+                                Layout.columnSpan: 4
+                                // Layout.row:0
+                                // Layout.column:1
+                                // Layout.preferredHeight:80
+                                Layout.fillHeight:true
+                                // plotAreaColor :'green'
+                                backgroundColor :"transparent"
+                                
+                                // Layout.margins:-100
+
+                                // anchors { fill: parent; margins: -15 }
+                                margins { right: 0; bottom: 0; left: 0; top: 5 }
+
+                                // titleFont: 'Roboto Mono'
+                                legend.visible: false
+
+                                ValueAxis {
+                                    id: axisX
+                                    // labelsAngle :-45
+                                    Component.onCompleted:{
+                                        min=1
+                                    }
+                                    min: 1
+                                    max: series1.count
+                                    tickCount :series1.count
+                                    labelsColor:'#646669'
+                                    labelFormat: "%d"
+                                    gridLineColor :'#2e3033'
+                                    labelsFont:roboto
+                                    // minorTickCount :2
+                                    // visible: false
+                                }
+                                ValueAxis {
+                                    id: axisY
+                                    min: 0
+                                    max: timer.maxSpeed *1.1
+                                    labelsColor:'#646669'
+                                    labelFormat: "%d"
+                                    gridLineColor :'#2e3033'
+                                    labelsFont:roboto
+                                    // labelsFont:'Roboto Mono'
+                                    // visible:false
+                                }
+                                // AreaSeries {
+                                //     borderColor: Qt.rgba(0, 0, 0, 0)
+                                //     borderWidth: 0
+                                //     // brush.color: "yellow"
+                                //     axisX: axisX
+                                //     axisY: axisY
+
+                                //     upperSeries: series1
+                                // }
+
+                                Rectangle{
+                                    id:ticket
+                                    width:105
+                                    height:85
+                                    color: Qt.rgba(0,0,0,0.8)
+                                    radius:4
+                                    opacity:0
+                                    
+                                    Text {
+                                        id: ticket_text
+                                        anchors.top:parent.top
+                                        anchors.left:parent.left
+                                        anchors.margins:5
+
+                                        text:"3"
+                                        font.pointSize: 11
+                                        color: "white"
+                                        horizontalAlignment: Text.AlignLeft
+                                        font.family: "Roboto Mono"
+                                        font.weight: 700
+                                    }
+                                    ColumnLayout{
+                                        anchors.bottom:parent.bottom
+                                        anchors.left:parent.left
+                                        anchors.right:parent.right
+                                        anchors.margins:5
+                                        spacing:-2
+                                        Repeater{
+                                            id:ticket_rep
+                                            // property var ticket_model:[
+                                            //     {"color":"red","text":"errors","val":"12"},
+                                            //     {"color":"yellow","text":"wmp","val":"12"},
+                                            //     {"color":"gray","text":"raw","val":"12"},
+                                            // ]
+                                            model:ListModel{
+                                                id:ticket_model
+                                                ListElement{color:"#ca4754";text:"errors";val:12}
+                                                ListElement{color:"#e2b714";text:"wpm";val:12}
+                                                ListElement{color:"#646669";text:"raw";val:12}
+
+
+                                            }
+                                            delegate:RowLayout{
+                                                spacing:4
+                                                Rectangle{
+                                                    width:14
+                                                    height:14
+                                                    color:model.color
+                                                }
+                                                Text{
+                                                    text:model.text+":"
+                                                    font.pointSize: 10
+                                                    color: "white"
+                                                    horizontalAlignment: Text.AlignLeft
+                                                    font.family: "Roboto Mono"
+                                                    font.weight: 400
+                                                }
+                                                Text{
+                                                    text:model.val
+                                                    font.pointSize: 10
+                                                    color: "white"
+                                                    horizontalAlignment: Text.AlignLeft
+                                                    font.family: "Roboto Mono"
+                                                    font.weight: 400
+                                                }
+                                            }
+                                        }
+                                    }
+                                    // visible:false
+
+                                    // Behavior on x { SmoothedAnimation { velocity: 2200 } }
+                                    // Behavior on y { SmoothedAnimation { velocity: 2200 } }
+                                    Behavior on x {
+                                        NumberAnimation{
+                                            duration:500
+                                            easing.type:Easing.OutExpo
+                                        }
+                                    }
+                                    Behavior on y {
+                                        NumberAnimation{
+                                            duration:500
+                                            easing.type:Easing.OutExpo
+                                        }
+                                    }
+                                    Behavior on opacity{
+                                        NumberAnimation {
+                                            // duration: 300
+                                            easing.type: Easing.InOutQuad
+                                        }
+                                    }
+                                    PropertyChanges{ visible:opacity===1}
+
+                                    // x:
+                                }
+                                MouseArea{
+                                    anchors.fill:parent
+                                    propagateComposedEvents:true
+                                    hoverEnabled: true
+                                    onPositionChanged:mouse=>{
+                                        // console.log(mouse.x)
+                                        // console.log(chartView.mapToValue(Qt.point(mouse.x,mouse.y)))
+                                        var point=chartView.mapToValue(Qt.point(mouse.x,mouse.y))
+                                        // console.log(Math.round(point.x))
+                                        if ((Math.abs(point.x-Math.round(point.x))<0.5 )) {
+                                            var seriesPoint = chartView.mapToPosition(Qt.point(Math.round(point.x),series1.at(Math.round(point.x)-1).y));
+                                            // console.log(Math.round(point.x)+ "  "+ series1.at(Math.round(point.x)).y)
+                                            ticket.x = seriesPoint.x - ticket.width / 2; // Center the text horizontally
+                                            // console.log(seriesPoint.x)
+                                            ticket.y = seriesPoint.y - ticket.height/2; // Position the text above the point
+                                            ticket.opacity=1
+
+                                            // ticket_text.text=Math.round(point.x)
+                                            // ticket_rep.model.get(0).val=0
+                                            ticket_rep.model.get(1).val=series1.at(Math.round(point.x)-1).y
+                                            // ticket_rep.model.get(2).val=Math.random()
+                                            // console.log(ticket_rep.ticket_model.wmp)
+                                            // ticket.visible = true;
+                                        }
+                                    }
+                                    onExited:{
+                                        ticket.opacity=0
+                                    }
+                                    onClicked:{
+                                        console.log('hello')
+                                    }
+                                }
+
+                                SplineSeries {
+                                    id: series1
+                                    // Component.onCompleted:{
+                                    //     append(0,14)
+                                    //     append(2,5)
+                                    //     append(3,8)
+                                    //     append(4,18)
+                                    //     append(5,9)
+                                    // }
+                                    axisX: axisX
+                                    axisY: axisY
+                                    color: '#e2b714'
+                                    useOpenGL: true
+                                    width: 3
+                                    capStyle: Qt.RoundCap
+                                    pointsVisible:true
+                                    // pointLabelsVisible :true
+                                    selectedColor :'green'
+                                    onHovered:(point,state)=> {
+                                    }
+                                    
+                                }
+                                // AreaSeries {
+                                //     borderColor: Qt.rgba(0, 0, 0, 0)
+                                //     borderWidth: 0
+                                //     brush: "yellow"
+                                //     axisX: axisX
+                                //     axisY: axisY
+                                //     upperSeries: series2
+                                // }
+
+                                // LineSeries {
+                                //     id: series2
+                                //     axisX: axisX
+                                //     axisY: axisY
+                                //     // name: "Besoin personnel"
+                                //     color: '#14C9C9'
+                                //     useOpenGL: true
+                                //     width: 2
+                                //     capStyle: Qt.RoundCap
+                                //     onHovered: (point,state)=>{
+                                //     }
+                                // }
+                            }
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                Layout.alignment:Qt.AlignTop
+                                // Layout.rowSpan: 1
+                                // Layout.columnSpan: 1
+                                Layout.row:1
+                                Layout.column:0
+                                spacing: -10
+
+                                Text {
+                                    text:"acc"
+                                    font.pointSize: 23
+                                    color: "#646669"
+                                    horizontalAlignment: Text.AlignLeft
+                                    font.family: "Roboto Mono"
+                                    font.weight: 500
+                                }
+                                Text {
+                                    text:"99%"
+                                    font.pointSize: 40
+                                    color: "#e2b714"
+                                    horizontalAlignment: Text.AlignLeft
+                                    font.family: "Roboto Mono"
+                                    font.weight: 500
+                                }
+
+                            }
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                Layout.alignment:Qt.AlignTop
+                                // Layout.rowSpan: 1
+                                // Layout.columnSpan: 1
+                                Layout.row:2
+                                Layout.column:0
+                                spacing: -10
+
+                                Text {
+                                    text:"acc"
+                                    font.pointSize: 23
+                                    color: "#646669"
+                                    horizontalAlignment: Text.AlignLeft
+                                    font.family: "Roboto Mono"
+                                    font.weight: 500
+                                }
+                                Text {
+                                    text:"99%"
+                                    font.pointSize: 40
+                                    color: "#e2b714"
+                                    horizontalAlignment: Text.AlignLeft
+                                    font.family: "Roboto Mono"
+                                    font.weight: 500
+                                }
+
+                            }
                         }
+                        
 
                         Item{
                             Layout.fillHeight:true
