@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import QtCharts 
+import QtQuick.Templates as T
 
 import './Components'
 
@@ -10,21 +11,85 @@ ApplicationWindow{
     width:942
     height:525
     visible:true
-    color:'#323437'
+    color:bg_color
     title:'Qtmonkeytype'
     font.family:'Roboto Mono'
     property font roboto: ({
         family: "Roboto Mono",
         pointSize: 10,
-        weight:600
+        weight:500
     })
+    property color bg_color: Qt.color('#323437')
+    property color main_color: Qt.color('#e2b714')
+    property color caret_color: Qt.color('#e2b714')
+    property color sub_color: Qt.color('#646669')
+    property color sub_alt_color: Qt.color('#2c2e31')
+
+    property color text_color: Qt.color('#d1d0c5')
+    property color error_color: Qt.color('#ca4754')
+    property color error_extra_color: Qt.color('#7e2a33')
+    property color colorful_error_color: Qt.color('#ca4754')
+    property color colorful_error_extra_color: Qt.color('#7e2a33')
+    
+    // Rectangle{
+    //     id:button
+    //     width:80
+    //     height:30
+    //     color:'green'
+    //     onEnabledChanged: state = ""
+    //     states: [
+    //         State {
+    //             name: "Hovering"
+    //             PropertyChanges {
+    //                 target: root_app
+    //                 bg_color: "green"
+    //                 main_color:'blue'
+    //             }
+    //         }
+    //     ]
+
+    //     //define transmission for the states
+    //     transitions: [
+    //         Transition {
+    //             from: ""
+    //             to: "Hovering"
+    //             ColorAnimation {
+    //                 duration: 150
+    //             }
+    //         },
+    //         Transition {
+    //             from: "*"
+    //             to: ""
+    //             ColorAnimation {
+    //                 duration: 150
+    //             }
+    //         }
+    //     ]
+    //     signal clicked
+    //     MouseArea {
+    //         id: mouseArea
+    //         anchors.fill: parent
+    //         cursorShape: Qt.PointingHandCursor
+    //         hoverEnabled: button.enabled 
+    //         acceptedButtons: Qt.LeftButton
+    //         onClicked: {
+    //             // button.clicked();
+    //         }
+    //         onEntered: {
+    //             button.state = 'Hovering';
+    //         }
+    //         onExited: {
+    //             button.state = '';
+    //         }
+    //     }
+    // }
 
     // Rectangle{
     //     anchors.fill:parent
     //     anchors.margins:100
     //     border.width:1
-    //     border.color:"#646669"
-    //     color:'#2c2e31'
+    //     border.color:root_app.sub_color.toString()
+    //     color:root_app.sub_alt_color.toString()
     //     radius:8
     //     ListModel{
     //         id:listModel
@@ -35,7 +100,7 @@ ApplicationWindow{
         //     text:'time left to memorise all words'
         //     font.family:'Roboto Mono'
         //     font.pointSize:17
-        //     color:'#d1d0c5'
+        //     color:root_app.text_color.toString()
         //     opacity:0
         // }
         // Text{
@@ -47,7 +112,7 @@ ApplicationWindow{
         //     text:''
         //     font.family:'Roboto Mono'
         //     font.pointSize:17
-        //     color:'white'
+        //     color:root_app.text_color.toString()
         //     textFormat :Text.RichText
         //     wrapMode:Text.WordWrap
         //     // opacity:0.3
@@ -55,7 +120,7 @@ ApplicationWindow{
         ColumnLayout{
             anchors.fill:parent
             anchors.margins:34
-            spacing:20
+            spacing:30
             ColumnLayout{
                 // enabled:!textEdit.focus
                 // Component.onCompleted:{
@@ -72,7 +137,7 @@ ApplicationWindow{
                         // Layout.alignment:Qt.AlignCenter
                         Layout.topMargin:5
                         source:'./images/logo.svg'
-                        color:'#e2b714'
+                        color:root_app.main_color
                         sourceSize.height:23
                     }
                     Text{
@@ -86,7 +151,7 @@ ApplicationWindow{
                         font.family:'Lexend Deca'
                         font.weight:600
                         font.pointSize:25
-                        color:'#d1d0c5'
+                        color:root_app.text_color.toString()
                         Text{
                             anchors.top:parent.top
                             anchors.left:parent.left
@@ -95,7 +160,7 @@ ApplicationWindow{
                             text:"monkey see"
                             font.family:'Lexend Deca'
                             font.pointSize:9
-                            color:'#646669'
+                            color:root_app.sub_color.toString()
                         }
                     }
                     RowLayout{
@@ -104,80 +169,80 @@ ApplicationWindow{
                         Layout.fillHeight:true
                         spacing:20
                         Button{
-                            hoverColor:'white'
-                            pressColor:'#646669'
+                            hoverColor:root_app.text_color.toString()
+                            pressColor:root_app.sub_color.toString()
                             Layout.alignment:Qt.AlignBottom
                             implicitHeight:monkeytype_name.height-15
                             implicitWidth:28
                             imageSource:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M528 448H48c-26.5 0-48-21.5-48-48V112c0-26.5 21.5-48 48-48h480c26.5 0 48 21.5 48 48v288c0 26.5-21.5 48-48 48zM128 180v-40c0-6.6-5.4-12-12-12H76c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-336 96v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-336 96v-40c0-6.6-5.4-12-12-12H76c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm288 0v-40c0-6.6-5.4-12-12-12H172c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h232c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12z"/></svg>'
                             imageSize.width:20
                             buttonText:''
-                            imageColor:"#646669"
-                            color:"#323437"
+                            imageColor:root_app.sub_color.toString()
+                            color:root_app.bg_color
                         }
                         Button{
-                            hoverColor:'white'
-                            pressColor:'#646669'
+                            hoverColor:root_app.text_color.toString()
+                            pressColor:root_app.sub_color.toString()
                             Layout.alignment:Qt.AlignBottom
                             implicitHeight:monkeytype_name.height-15
                             implicitWidth:28
                             imageSource:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M528 448H112c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h416c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm64-320c-26.5 0-48 21.5-48 48 0 7.1 1.6 13.7 4.4 19.8L476 239.2c-15.4 9.2-35.3 4-44.2-11.6L350.3 85C361 76.2 368 63 368 48c0-26.5-21.5-48-48-48s-48 21.5-48 48c0 15 7 28.2 17.7 37l-81.5 142.6c-8.9 15.6-28.9 20.8-44.2 11.6l-72.3-43.4c2.7-6 4.4-12.7 4.4-19.8 0-26.5-21.5-48-48-48S0 149.5 0 176s21.5 48 48 48c2.6 0 5.2-.4 7.7-.8L128 416h384l72.3-192.8c2.5 .4 5.1 .8 7.7 .8 26.5 0 48-21.5 48-48s-21.5-48-48-48z"/></svg>'
                             imageSize.width:20
                             buttonText:''
-                            imageColor:"#646669"
-                            color:"#323437"
+                            imageColor:root_app.sub_color.toString()
+                            color:root_app.bg_color
                         }
                         Button{
-                            hoverColor:'white'
-                            pressColor:'#646669'
+                            hoverColor:root_app.text_color.toString()
+                            pressColor:root_app.sub_color.toString()
                             Layout.alignment:Qt.AlignBottom
                             implicitHeight:monkeytype_name.height-15
                             implicitWidth:28
                             imageSource:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M20 424.2h20V279.8H20c-11 0-20-9-20-20V212c0-11 9-20 20-20h112c11 0 20 9 20 20v212.2h20c11 0 20 9 20 20V492c0 11-9 20-20 20H20c-11 0-20-9-20-20v-47.8c0-11 9-20 20-20zM96 0C56.2 0 24 32.2 24 72s32.2 72 72 72 72-32.2 72-72S135.8 0 96 0z"/></svg>'
                             imageSize.height:height-8
                             buttonText:''
-                            imageColor:"#646669"
-                            color:"#323437"
+                            imageColor:root_app.sub_color.toString()
+                            color:root_app.bg_color
                         }
                         Button{
-                            hoverColor:'white'
-                            pressColor:'#646669'
+                            hoverColor:root_app.text_color.toString()
+                            pressColor:root_app.sub_color.toString()
                             Layout.alignment:Qt.AlignBottom
                             implicitHeight:monkeytype_name.height-15
                             implicitWidth:28
                             imageSource:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8.2-74.3-7.8-109.2 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L88.7 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4 .6 11.2 5.5 14L67.3 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8.2 74.3 7.8 109.2 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"/></svg>'
                             imageSize.height:height-8
                             buttonText:''
-                            imageColor:"#646669"
-                            color:"#323437"
+                            imageColor:root_app.sub_color.toString()
+                            color:root_app.bg_color
                         }
 
                         Item{
                             Layout.fillWidth:true
                         }
                         Button{
-                            hoverColor:'white'
-                            pressColor:'#646669'
+                            hoverColor:root_app.text_color.toString()
+                            pressColor:root_app.sub_color.toString()
                             Layout.alignment:Qt.AlignBottom
                             implicitHeight:monkeytype_name.height-15
                             implicitWidth:28
                             imageSource:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M224 512c35.3 0 64-28.7 64-64H160c0 35.4 28.7 64 64 64zm215.4-149.7c-19.3-20.8-55.5-52-55.5-154.3 0-77.7-54.5-139.9-127.9-155.2V32c0-17.7-14.3-32-32-32s-32 14.3-32 32v20.8C118.6 68.1 64.1 130.3 64.1 208c0 102.3-36.2 133.5-55.5 154.3-6 6.5-8.7 14.2-8.6 21.7 .1 16.4 13 32 32.1 32h383.8c19.1 0 32-15.6 32.1-32 .1-7.6-2.6-15.3-8.6-21.7z"/></svg>'
                             imageSize.height:height-8
                             buttonText:''
-                            imageColor:"#646669"
-                            color:"#323437"
+                            imageColor:root_app.sub_color.toString()
+                            color:root_app.bg_color
                         }
                         Button{
-                            hoverColor:'white'
-                            pressColor:'#646669'
+                            hoverColor:root_app.text_color.toString()
+                            pressColor:root_app.sub_color.toString()
                             Layout.alignment:Qt.AlignBottom
                             implicitHeight:monkeytype_name.height-15
                             implicitWidth:28
                             imageSource:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M313.6 304c-28.7 0-42.5 16-89.6 16-47.1 0-60.8-16-89.6-16C60.2 304 0 364.2 0 438.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-25.6c0-74.2-60.2-134.4-134.4-134.4zM400 464H48v-25.6c0-47.6 38.8-86.4 86.4-86.4 14.6 0 38.3 16 89.6 16 51.7 0 74.9-16 89.6-16 47.6 0 86.4 38.8 86.4 86.4V464zM224 288c79.5 0 144-64.5 144-144S303.5 0 224 0 80 64.5 80 144s64.5 144 144 144zm0-240c52.9 0 96 43.1 96 96s-43.1 96-96 96-96-43.1-96-96 43.1-96 96-96z"/></svg>'
                             imageSize.height:height-8
                             buttonText:''
-                            imageColor:"#646669"
-                            color:"#323437"
+                            imageColor:root_app.sub_color.toString()
+                            color:root_app.bg_color
                         }
                     }
                 }
@@ -188,7 +253,7 @@ ApplicationWindow{
                     Layout.maximumWidth:870
                     radius: 8
                     height:40
-                    color:'#2c2e31'
+                    color:root_app.sub_alt_color.toString()
                     Flickable {
                         clip: true
                         boundsBehavior: Flickable.StopAtBounds
@@ -196,18 +261,20 @@ ApplicationWindow{
                         anchors.leftMargin:25
                         anchors.rightMargin:25
                         anchors.topMargin:10
-                        contentWidth: mainRows.width +5; contentHeight: mainRows.height
+                        contentWidth: mainRows.width; contentHeight: mainRows.height
                         flickableDirection: Flickable.HorizontalFlick
                         ScrollBar.horizontal: ScrollBar {
                             implicitHeight:8
                         }
+                        ButtonGroup { id: typeMode_btns }
                         RowLayout{
                             id:mainRows
                             // anchors.fill:parent
                             spacing:20
                             RowButton{
-                                hoverColor:'white'
-                                pressColor:'#646669'
+                                id:punctuation
+                                hoverColor:root_app.text_color.toString()
+                                pressColor:root_app.sub_color.toString()
                                 // implicitWidth:content.width
                                 Layout.alignment:Qt.AlignBottom
                                 implicitHeight:parent.height
@@ -216,13 +283,20 @@ ApplicationWindow{
                                 buttonText:'punctuation'
                                 fontWeight:500
                                 fontSize:10
-                                imageColor:"#646669"
-                                textColor:"#646669"
+                                imageColor:checked? root_app.main_color:root_app.sub_color.toString()
+                                textColor:checked? root_app.main_color:root_app.sub_color.toString()
                                 color:"transparent"
+                                checkable:true
+                                onClicked:{
+                                    checked=!checked
+                                    textEdit.punctuation=checked
+                                    textEdit.resetProperties(textEdit.repeated)
+                                }
                             }
                             RowButton{
-                                hoverColor:'white'
-                                pressColor:'#646669'
+                                id:numbers
+                                hoverColor:root_app.text_color.toString()
+                                pressColor:root_app.sub_color.toString()
                                 // implicitWidth:content.width
                                 Layout.alignment:Qt.AlignBottom
                                 implicitHeight:parent.height
@@ -231,19 +305,25 @@ ApplicationWindow{
                                 buttonText:'numbers'
                                 fontWeight:500
                                 fontSize:10
-                                imageColor:"#646669"
-                                textColor:"#646669"
+                                imageColor:checked? root_app.main_color:root_app.sub_color.toString()
+                                textColor:checked? root_app.main_color:root_app.sub_color.toString()
                                 color:"transparent"
+                                checkable:true
+                                onClicked:{
+                                    checked=!checked
+                                    textEdit.numbers=checked
+                                    textEdit.resetProperties(textEdit.repeated)
+                                }
                             }
                             Rectangle{
                                 width:4
                                 Layout.fillHeight: true
-                                color:"#323437"
+                                color:root_app.bg_color
                                 radius:4
                             }
                             RowButton{
-                                hoverColor:'white'
-                                pressColor:'#646669'
+                                hoverColor:root_app.text_color.toString()
+                                pressColor:root_app.sub_color.toString()
                                 // implicitWidth:content.width
                                 Layout.alignment:Qt.AlignBottom
                                 implicitHeight:parent.height
@@ -254,16 +334,17 @@ ApplicationWindow{
                                 fontSize:10
                                 checkable:true
                                 autoExclusive: true
-                                imageColor:checked? "#e2b714":"#646669"
-                                textColor:checked? "#e2b714":"#646669"
+                                imageColor:checked? root_app.main_color:root_app.sub_color.toString()
+                                textColor:checked? root_app.main_color:root_app.sub_color.toString()
                                 color:"transparent"
                                 onClicked:{
                                     checked=true
                                 }
+                                ButtonGroup.group:typeMode_btns
                             }
                             RowButton{
-                                hoverColor:'white'
-                                pressColor:'#646669'
+                                hoverColor:root_app.text_color.toString()
+                                pressColor:root_app.sub_color.toString()
                                 // implicitWidth:content.width
                                 Layout.alignment:Qt.AlignBottom
                                 implicitHeight:parent.height
@@ -275,16 +356,17 @@ ApplicationWindow{
                                 checked:true
                                 checkable:true
                                 autoExclusive: true
-                                imageColor:checked? "#e2b714":"#646669"
-                                textColor:checked? "#e2b714":"#646669"
+                                imageColor:checked? root_app.main_color:root_app.sub_color.toString()
+                                textColor:checked? root_app.main_color:root_app.sub_color.toString()
                                 color:"transparent"
                                 onClicked:{
                                     checked=true
                                 }
+                                ButtonGroup.group:typeMode_btns
                             }
                             RowButton{
-                                hoverColor:'white'
-                                pressColor:'#646669'
+                                hoverColor:root_app.text_color.toString()
+                                pressColor:root_app.sub_color.toString()
                                 // implicitWidth:content.width
                                 Layout.alignment:Qt.AlignBottom
                                 implicitHeight:parent.height
@@ -295,16 +377,17 @@ ApplicationWindow{
                                 fontSize:10
                                 checkable:true
                                 autoExclusive: true
-                                imageColor:checked? "#e2b714":"#646669"
-                                textColor:checked? "#e2b714":"#646669"
+                                imageColor:checked? root_app.main_color:root_app.sub_color.toString()
+                                textColor:checked? root_app.main_color:root_app.sub_color.toString()
                                 color:"transparent"
                                 onClicked:{
                                     checked=true
                                 }
+                                ButtonGroup.group:typeMode_btns
                             }
                             RowButton{
-                                hoverColor:'white'
-                                pressColor:'#646669'
+                                hoverColor:root_app.text_color.toString()
+                                pressColor:root_app.sub_color.toString()
                                 // implicitWidth:content.width
                                 Layout.alignment:Qt.AlignBottom
                                 implicitHeight:parent.height
@@ -315,16 +398,17 @@ ApplicationWindow{
                                 fontSize:10
                                 checkable:true
                                 autoExclusive: true
-                                imageColor:checked? "#e2b714":"#646669"
-                                textColor:checked? "#e2b714":"#646669"
+                                imageColor:checked? root_app.main_color:root_app.sub_color.toString()
+                                textColor:checked? root_app.main_color:root_app.sub_color.toString()
                                 color:"transparent"
                                 onClicked:{
                                     checked=true
                                 }
+                                ButtonGroup.group:typeMode_btns
                             }
                             RowButton{
-                                hoverColor:'white'
-                                pressColor:'#646669'
+                                hoverColor:root_app.text_color.toString()
+                                pressColor:root_app.sub_color.toString()
                                 // implicitWidth:content.width
                                 Layout.alignment:Qt.AlignBottom
                                 implicitHeight:parent.height
@@ -335,49 +419,53 @@ ApplicationWindow{
                                 fontSize:10
                                 checkable:true
                                 autoExclusive: true
-                                imageColor:checked? "#e2b714":"#646669"
-                                textColor:checked? "#e2b714":"#646669"
+                                imageColor:checked? root_app.main_color:root_app.sub_color.toString()
+                                textColor:checked? root_app.main_color:root_app.sub_color.toString()
                                 color:"transparent"
                                 onClicked:{
                                     checked=true
                                 }
+                                ButtonGroup.group:typeMode_btns
                             }
                             Rectangle{
                                 width:4
                                 Layout.fillHeight: true
-                                color:"#323437"
+                                color:root_app.bg_color
                                 radius:4
                             }
                             Repeater{
                                 model:[10,25 ,50 ,100]
                                 delegate :Button{
-                                    hoverColor:'white'
-                                    pressColor:'#646669'
+                                    hoverColor:root_app.text_color.toString()
+                                    pressColor:root_app.sub_color.toString()
                                     Layout.alignment:Qt.AlignBottom
                                     implicitHeight:parent.height
                                     implicitWidth:20
                                     buttonText:modelData
                                     fontSize:9
                                     fontWeight:400
-                                    textColor:checked ? "#e2b714" :"#646669"
+                                    textColor:checked ? root_app.main_color :root_app.sub_color.toString()
                                     color:"transparent"
                                     checkable:true
                                     autoExclusive: true
+                                    checked:index===2
                                     onClicked:{
                                         checked=true
+                                        textEdit.wordCount=parseInt(modelData)
+                                        textEdit.resetProperties(textEdit.repeated)
                                     }
                                 }
                             }
                             Button{
-                                hoverColor:'white'
-                                pressColor:'#646669'
+                                hoverColor:root_app.text_color.toString()
+                                pressColor:root_app.sub_color.toString()
                                 Layout.alignment:Qt.AlignBottom
                                 implicitHeight:parent.height
                                 implicitWidth:20
                                 imageSize.height:height-8
                                 imageSource:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M501.1 395.7L384 278.6c-23.1-23.1-57.6-27.6-85.4-13.9L192 158.1V96L64 0 0 64l96 128h62.1l106.6 106.6c-13.6 27.8-9.2 62.3 13.9 85.4l117.1 117.1c14.6 14.6 38.2 14.6 52.7 0l52.7-52.7c14.5-14.6 14.5-38.2 0-52.7zM331.7 225c28.3 0 54.9 11 74.9 31l19.4 19.4c15.8-6.9 30.8-16.5 43.8-29.5 37.1-37.1 49.7-89.3 37.9-136.7-2.2-9-13.5-12.1-20.1-5.5l-74.4 74.4-67.9-11.3L334 98.9l74.4-74.4c6.6-6.6 3.4-17.9-5.7-20.2-47.4-11.7-99.6 .9-136.6 37.9-28.5 28.5-41.9 66.1-41.2 103.6l82.1 82.1c8.1-1.9 16.5-2.9 24.7-2.9zm-103.9 82l-56.7-56.7L18.7 402.8c-25 25-25 65.5 0 90.5s65.5 25 90.5 0l123.6-123.6c-7.6-19.9-9.9-41.6-5-62.7zM64 472c-13.2 0-24-10.8-24-24 0-13.3 10.7-24 24-24s24 10.7 24 24c0 13.2-10.7 24-24 24z"/></svg>'
                                 buttonText:''
-                                imageColor:checked ? "#e2b714" :"#646669"
+                                imageColor:checked ? root_app.main_color :root_app.sub_color.toString()
                                 color:"transparent"
                                 checkable:true
                                 autoExclusive: true
@@ -409,14 +497,14 @@ ApplicationWindow{
                         fontSize:12
                         checkable:true
                         autoExclusive: true
-                        disabledImageColor:"#ca4754"
-                        textColor:"#ca4754"
+                        disabledImageColor:root_app.error_color.toString()
+                        textColor:root_app.error_color.toString()
                         color:"transparent"
                         enabled:false
                     }
                     RowButton{
-                        hoverColor:'white'
-                        pressColor:'#646669'
+                        hoverColor:root_app.text_color.toString()
+                        pressColor:root_app.sub_color.toString()
                         // implicitWidth:content.width
                         content.spacing:20
                         Layout.alignment:Qt.AlignCenter
@@ -428,8 +516,8 @@ ApplicationWindow{
                         fontSize:12
                         checkable:true
                         autoExclusive: true
-                        imageColor:checked? "#e2b714":"#646669"
-                        textColor:checked? "#e2b714":"#646669"
+                        imageColor:checked? root_app.main_color:root_app.sub_color.toString()
+                        textColor:checked? root_app.main_color:root_app.sub_color.toString()
                         color:"transparent"
                         onClicked:{
                             // checked=!checked
@@ -438,8 +526,8 @@ ApplicationWindow{
                     RowButton{
                         id:customPace_btn
                         visible:textEdit.repeated
-                        hoverColor:'white'
-                        pressColor:'#646669'
+                        hoverColor:root_app.text_color.toString()
+                        pressColor:root_app.sub_color.toString()
                         // implicitWidth:content.width
                         content.spacing:20
                         Layout.alignment:Qt.AlignCenter
@@ -451,8 +539,8 @@ ApplicationWindow{
                         fontSize:12
                         checkable:true
                         autoExclusive: true
-                        imageColor:checked? "#e2b714":"#646669"
-                        textColor:checked? "#e2b714":"#646669"
+                        imageColor:checked? root_app.main_color:root_app.sub_color.toString()
+                        textColor:checked? root_app.main_color:root_app.sub_color.toString()
                         color:"transparent"
                         property int pace:98
                         onClicked:{
@@ -503,30 +591,31 @@ ApplicationWindow{
                             }
                             background: Rectangle {
                                 // radius: 6
-                                // color: '#323437'
+                                // color: root_app.bg_color
                                 color:Qt.rgba(0,0,0,0)
                             }
 
                             Rectangle {
                                 implicitWidth: root_app.width *0.5
                                 implicitHeight: 50
-                                color: '#323437'
+                                color: root_app.bg_color
                                 radius:8
                                 RowLayout{
                                     anchors.fill:parent
                                     spacing:0
                                     ColorImage{
                                         Layout.alignment:Qt.AlignCenter
-                                        Layout.leftMargin:16
-                                        Layout.rightMargin:13
-                                        source:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M416 208c0 45.9-14.9 88.3-40 122.7L486.6 441.4 509.3 464 464 509.3l-22.6-22.6L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>'
+                                        Layout.leftMargin:20
+                                        Layout.rightMargin:10
+                                        source:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M285.5 273L91.1 467.3c-9.4 9.4-24.6 9.4-33.9 0l-22.7-22.7c-9.4-9.4-9.4-24.5 0-33.9L188.5 256 34.5 101.3c-9.3-9.4-9.3-24.5 0-33.9l22.7-22.7c9.4-9.4 24.6-9.4 33.9 0L285.5 239c9.4 9.4 9.4 24.6 0 33.9z"/></svg>'
                                         color:'#8d8d8d'
-                                        sourceSize.height:19
+                                        sourceSize.width:10
                                     }
                                     TextField{
                                         // Layout.alignment:Qt.AlignCenter
                                         Layout.fillWidth:true
                                         Layout.fillHeight:true
+                                        placeholderText:'custom...'
                                         validator: IntValidator{}
                                         onTextEdited:{
                                             customPace_btn.pace=parseInt(text)
@@ -559,7 +648,12 @@ ApplicationWindow{
             Rectangle{
                 id:content_textEdit
                 Layout.fillWidth:true
-                Layout.fillHeight:true
+                // Layout.fillHeight:true
+                Layout.maximumHeight:32*4
+                Layout.preferredHeight:32*4
+                // Component.onCompleted:{
+                //     console.log(height)
+                // }
                 color:"transparent"
                 Text {
                     // property int wordCount :0
@@ -568,7 +662,7 @@ ApplicationWindow{
                     opacity:!textEdit.active ? 0:1
                     text: textEdit.cursorPosition + "/" + textEdit.length
                     font.pointSize: 16
-                    color: "#e2b714"
+                    color: root_app.main_color
                     horizontalAlignment: Text.AlignLeft
                     font.family: "Roboto Mono"
                     font.weight: 600
@@ -608,20 +702,59 @@ ApplicationWindow{
                         onCursorRectangleChanged: flick.ensureVisible(cursorRectangle)
                         selectByMouse :false
                         focus:true
+                        property bool punctuation
+                        property bool numbers
+                        function generateText() {
+                            var numWords=textEdit.wordCount
+                            var includePunctuation=textEdit.punctuation
+                            var includeNumbers=textEdit.numbers
+                            var words = [
+                                "write", "govern", "here", "of", "another", "see", "they", "these",
+                                "one", "many", "turn", "can", "to", "down", "there", "too", "about", "home",
+                                "a", "as", "lead", "use", "make", "long", "much", "well", "because",
+                                "day", "now", "when", "than", "for", "do", "consider", "since"
+                            ];
+                            var punctuation = [".", ",", "!", "?", ";", ":"];
+                            var numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+                            
+                            var text = "";
+                            
+                            for (var i = 0; i < numWords; i++) {
+                                var word = words[Math.round(Math.random() * words.length)];
+                                if (includeNumbers && Math.random() < 0.2) {
+                                    word += numbers[Math.round(Math.random() * numbers.length)];
+                                }
+                                if (includePunctuation && Math.random() < 0.3) {
+                                    word += punctuation[Math.round(Math.random() * punctuation.length)];
+                                }
+                                if(i===0){
+                                    textEdit.currentWord=word
+                                }
+                                text += word + " ";
+                            }
+                            textEdit.rawText=text.trim()
+                            textEdit.text = "<p style='line-height:100%' >" +text.trim()+"</p>"
+                        }
 
                         function resetProperties(isrepeated){
-                            textEdit.text="<p style='line-height:100%;color:#646669' >"+"get new become will each program go group large"+"</p>"
+                            // textEdit.wordCount=50
+                            if(isrepeated){
+                                textEdit.text="<p style='line-height:100%' >" +textEdit.rawText+"</p>"
+                            }else{
+                                generateText()
+                            }
                             textEdit.cursorPosition=0
                             textEdit.active=false
-                            textEdit.currentWord=textEdit.getText(textEdit.cursorPosition,textEdit.cursorPosition+textEdit.getText(textEdit.cursorPosition,textEdit.length-1).indexOf(" "))
+                            // textEdit.currentWord=textEdit.getText(textEdit.cursorPosition,textEdit.cursorPosition+textEdit.getText(textEdit.cursorPosition,textEdit.length-1).indexOf(" "))
                             textEdit.currentWordIndex=0
                             textEdit.writtenWords=0
                             textEdit.rawWrittenWords=0
-                            textEdit.wordCount=textEdit.getText(0,textEdit.length).split(" ").length
                             timer.timeStep=1
                             timer.maxSpeed=0
                             timer.rawMaxSpeed=0
                             textEdit.repeated=isrepeated
+                            series1.removePoints(0,series1.count)
+                            series2.removePoints(0,series2.count)
                         }
                         // anchors{
                         //     left:parent.left
@@ -634,8 +767,8 @@ ApplicationWindow{
                         // anchors.topMargin:10
                         wrapMode: TextEdit.Wrap
                         textFormat: TextEdit.RichText
-                        // text:"<p style='line-height:100%;color:#646669' >"+"get new become will each program go group large"+"</p>"
-                        text:"<p style='line-height:100%;color:#646669' >"+"get new become will each program go group large  first great make get child end can now write change one feel order some hand show early group man any state hand child late around this follow time he call all may never for here through of off those plan see person leave can he turn go they word"+"</p>"
+                        // text:"<p style='line-height:100%;colorroot_app.sub_color.toString() >"+"get new become will each program go group large"+"</p>"
+                        // text:"<p style='line-height:100%;colorroot_app.sub_color.toString() >"+"get new become will each program go group large  first great make get child end can now write change one feel order some hand show early group man any state hand child late around this follow time he call all may never for here through of off those plan see person leave can he turn go they word"+"</p>"
                         
                         // text:"
                         //         <!DOCTYPE html>
@@ -643,7 +776,7 @@ ApplicationWindow{
                         //         <head>
                         //         <style>
                         //         p{
-                        //         color:'#646669' ;
+                        //         color:root_app.sub_color.toString() ;
                         //         line-height:220%;
                         //         }
 
@@ -658,16 +791,17 @@ ApplicationWindow{
                         //         "
                         font.family:'Roboto Mono'
                         font.pointSize:18
-                        property int wordCount:getText(0,textEdit.length).split(" ").length
+                        property int wordCount:50
                         Component.onCompleted:{
                             // currentWord=getText(cursorPosition,cursorPosition+getText(cursorPosition,length-1).indexOf(" "))
-                            resetProperties(true)
+                            resetProperties(false)
                             // wordCount=getText(0,textEdit.length).indexOf(" ")
                             // console.log(wordCount)
                             // cursorPosition=length
                             // console.log(currentWord+">")
                         }
-                        // color:'white'
+                        color:root_app.sub_color.toString()
+                        // color:root_app.text_color.toString()
                         // color:"transparent"
                         // focus:true
                         // echoMode:TextInput.NoEcho
@@ -707,12 +841,12 @@ ApplicationWindow{
                             // console.log('edit finished')
                             // console.log(length)
                         }
-                        selectionColor : "#e2b714"
+                        selectionColor : root_app.caret_color
                         Rectangle {
                             id:cursorDelegate_
                             width: 2
                             height:32
-                            color: '#e2b714'
+                            color: root_app.caret_color
                             radius: 3
                             x:parent.cursorRectangle.x
                             y:parent.cursorRectangle.y
@@ -738,7 +872,7 @@ ApplicationWindow{
                             id:customPace_rect
                             width: 2
                             height:32
-                            color: '#646669'
+                            color: root_app.sub_color.toString()
                             radius: 3
                             opacity:0.5
                             visible:paceAnimation.running
@@ -818,35 +952,30 @@ ApplicationWindow{
                                     var writtenText=getText(currentWordIndex,cursorPosition)
                                     if(writtenText.length >= currentWord.length){
                                         // remove(currentWordIndex,cursorPosition)
-                                        insert(cursorPosition,"<font color='#646669'>"+currentWord+"</font>")
+                                        insert(cursorPosition,"<font color="+root_app.sub_color.toString()+">"+currentWord+"</font>")
                                         cursorPosition=cursorPosition-currentWord.length
                                     }else{
-                                        insert(cursorPosition,"<font color='#646669'>"+writtenText+"</font>")
+                                        insert(cursorPosition,"<font color="+root_app.sub_color.toString()+">"+writtenText+"</font>")
                                         cursorPosition=cursorPosition-writtenText.length
                                     }
                                     // console.log(resetText)
                                     // insert(cursorPosition,getText(0,cursorPosition))
                                     // event.accepted=true
-                                    // console.log('ctrl back : '+ lastspace+" "+typedText.text.length)
                                     // event.accepted = true
-                                    // if (lastspace-typedText.text.length+1!==0){
-                                        // Trim any trailing whitespace
+                                        // Trim any trailingroot_app.text_color.toString()pace
 
                                     // var text = text.trimEnd();
 
                                     // Find the position of the last space
-                                    // let lastSpaceIndex = typedText.text.trim().lastIndexOf("> <");
 
                                     // console.log(typedText.text)
                                     // // If there's no space, it means there's only one word, so the result would be empty
-                                    // if (lastSpaceIndex === -1) {
                                     //     console.log('wipe')
                                     //     typedText.text=''
                                     // }
 
                                     // for(i)
 
-                                    // typedText.text = typedText.text.slice(0,lastSpaceIndex+1)
                                     // console.log(typedText.text + "| l : "+typedText.text.length)
                                     return
                                 }
@@ -867,19 +996,19 @@ ApplicationWindow{
                                 return
                             }
                             if (event.key === Qt.Key_Left){
-                                // event.accepted = true
+                                event.accepted = true
                                 return
                             }
                             if (event.key === Qt.Key_Up){
-                                // event.accepted = true
+                                event.accepted = true
                                 return
                             }
                             if (event.key === Qt.Key_Right){
-                                // event.accepted = true
+                                event.accepted = true
                                 return
                             }
                             if (event.key === Qt.Key_Down){
-                                // event.accepted = true
+                                event.accepted = true
                                 return
                             }
                             if (event.key === Qt.Key_Backspace){
@@ -893,7 +1022,7 @@ ApplicationWindow{
                                     return
                                 }else{
                                     // remove(cursorPosition,cursorPosition)
-                                    insert(cursorPosition,"<font color='#646669'>"+currentWord[cursorPosition-currentWordIndex-1]+"</font>")
+                                    insert(cursorPosition,"<font color="+root_app.sub_color.toString()+">"+currentWord[cursorPosition-currentWordIndex-1]+"</font>")
                                     cursorPosition--
                                 }
                                 // console.log('I didd back')
@@ -919,7 +1048,6 @@ ApplicationWindow{
                                     writtenWords++
                                 }
                                 // console.log("w: "+textEdit.writtenWords)
-                                // console.log('I didd space '+ lastspace)
                                 // console.log(currentWord + ">")
                                 // console.log(currentWord.length + ">")
                                 // console.log(cursorPosition-currentWordIndex===currentWord.length)
@@ -944,7 +1072,7 @@ ApplicationWindow{
                             }
                             if (getText(cursorPosition,cursorPosition+1)===" "){
                                 console.log('spce')
-                                insert(cursorPosition,"<font color='#7e2a33'>"+event.text+"</font>")
+                                insert(cursorPosition,"<font color="+root_app.error_extra_color.toString()+">"+event.text+"</font>")
                                 event.accepted =true
                                 return
                             }
@@ -953,7 +1081,7 @@ ApplicationWindow{
                             var eventText=event.text !==" "?event.text : "&nbsp;"
                             // console.log('I typed :<'+textEdit.length+'>')
                             // console.log(cursorPosition)
-                            var charColor=event.text === getText(cursorPosition,cursorPosition+1) ? "#d1d0c5":"#ca4754"
+                            var charColor=event.text === getText(cursorPosition,cursorPosition+1) ? root_app.text_color.toString():root_app.error_color.toString()
                             // insert(currentWordIndex,"<u>")
                             insert(cursorPosition,"<font color='"+charColor+"'>"+(getText(cursorPosition,cursorPosition+1))+"</font>")
                             // insert(cursorPosition,"<font color='red'>"+eventText+"</font>")
@@ -969,23 +1097,23 @@ ApplicationWindow{
                                 active=false
                             }
                             event.accepted =true
-                            // addedChar=true
                         }
                         property string currentWord
                         property int currentWordIndex:0
-                        property int lastspace:0
-                        property bool addedChar:false
 
                         property bool active:false
                         property int writtenWords:0
                         property int rawWrittenWords:0
                         property bool repeated:false
+                        property string rawText
 
                         onActiveChanged:{
                             if(textEdit.repeated===false){
                                 return
                             }
-                            paceAnimation.running=true
+                            if(active){
+                                paceAnimation.running=true
+                            }
                         }
                         // property bool active:cursorPosition!==textEdit.length
                         // property var results:[34,53,59]
@@ -1044,10 +1172,94 @@ ApplicationWindow{
                             onClicked:{
                                 // timer.clicks++
                                 // console.log('hello my name is mouseare')
-                                // textEdit.focus=true
+                                textEdit.focus=true
                             }
                         }
                     }
+                }
+            }
+            RowLayout{
+                Layout.fillWidth: true
+                // Layout.topMargin:40
+                spacing:60
+                Item{
+                    Layout.fillWidth:true
+                }
+                Button{
+                    hoverColor:root_app.text_color.toString()
+                    pressColor:root_app.sub_color.toString()
+                    Layout.alignment:Qt.AlignBottom
+                    implicitHeight:41-15 +10
+                    implicitWidth:28 +10
+                    imageSource:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M463.5 224H472c13.3 0 24-10.7 24-24V72c0-9.7-5.8-18.5-14.8-22.2s-19.3-1.7-26.2 5.2L413.4 96.6c-87.6-86.5-228.7-86.2-315.8 1c-87.5 87.5-87.5 229.3 0 316.8s229.3 87.5 316.8 0c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0c-62.5 62.5-163.8 62.5-226.3 0s-62.5-163.8 0-226.3c62.2-62.2 162.7-62.5 225.3-1L327 183c-6.9 6.9-8.9 17.2-5.2 26.2s12.5 14.8 22.2 14.8H463.5z"/></svg>'
+                    imageSize.height:41-15-8
+                    buttonText:''
+                    imageColor:root_app.sub_color.toString()
+                    color:root_app.bg_color
+                    borderWidth:2
+                    borderColor:focus?root_app.text_color.toString():"transparent"
+                    focus:true
+                    Keys.onPressed:event=>{
+                        if (event.key !== 16777220){
+                            return
+                        }
+                        textEdit.resetProperties(false)
+                    }
+                    onClicked:{
+                        textEdit.resetProperties(false)
+                    }
+                    
+                    Text {
+                        opacity:parent.state ==="Hovering"?1:0
+                        anchors.top:parent.bottom
+                        anchors.topMargin:parent.state ==="Hovering"?22:20
+                        anchors.horizontalCenter:parent.horizontalCenter
+                        wrapMode: Text.WordWrap
+                        text:'Restart test'
+                        font.pointSize: 12
+                        color: "white"
+                        horizontalAlignment: Text.AlignLeft
+                        font.family: "Roboto Mono"
+                        font.weight: 600
+                        Rectangle{
+                            anchors.fill:parent
+                            anchors.topMargin:-5
+                            anchors.bottomMargin:-5
+                            anchors.leftMargin:-15
+                            anchors.rightMargin:-15
+                            color:Qt.rgba(0,0,0,0.8)
+                            radius:2
+                            z:-1
+                            ColorImage{
+                                anchors.bottom:parent.top
+                                anchors.horizontalCenter:parent.horizontalCenter
+
+                                anchors.bottomMargin:-5
+                                sourceSize.width:10
+                                // sourceSize.height:5
+                                color:Qt.rgba(0,0,0,0.8)
+                                source:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M182.6 137.4c-12.5-12.5-32.8-12.5-45.3 0l-128 128c-9.2 9.2-11.9 22.9-6.9 34.9s16.6 19.8 29.6 19.8H288c12.9 0 24.6-7.8 29.6-19.8s2.2-25.7-6.9-34.9l-128-128z"/></svg>'
+                            }
+                        }
+                        Behavior on opacity{
+                            NumberAnimation {
+                                duration: 200
+                                easing.type: Easing.InOutQuad
+                            }
+                        }
+                        Behavior on anchors.topMargin{
+                            NumberAnimation {
+                                duration: 200
+                                easing.type: Easing.InOutQuad
+                            }
+                        }
+                        PropertyChanges{ visible:opacity===1}
+                    }
+                }
+                
+
+                Item{
+                    Layout.fillWidth:true
                 }
             }
             Popup {
@@ -1063,9 +1275,7 @@ ApplicationWindow{
                 closePolicy: Popup.NoAutoClose
                 padding: 0
                 onOpened: {
-                    // Disable interaction with the current page
-                    // stack.busy
-                    // console.log(textEdit.active)
+                    paceAnimation.complete()
                     axisX.min=1
                     
                 }
@@ -1106,7 +1316,7 @@ ApplicationWindow{
                 Rectangle {
                     implicitWidth: root_app.width
                     implicitHeight: root_app.height 
-                    color: '#323437'
+                    color: root_app.bg_color
                     ColumnLayout{
                         anchors.fill:parent
                         anchors.margins:34
@@ -1118,7 +1328,7 @@ ApplicationWindow{
                                 // Layout.alignment:Qt.AlignCenter
                                 Layout.topMargin:5
                                 source:'./images/logo.svg'
-                                color:'#e2b714'
+                                color:root_app.main_color
                                 sourceSize.height:23
                             }
                             Text{
@@ -1128,7 +1338,7 @@ ApplicationWindow{
                                 font.family:'Lexend Deca'
                                 font.weight:600
                                 font.pointSize:25
-                                color:'#d1d0c5'
+                                color:root_app.text_color.toString()
                                 Text{
                                     anchors.top:parent.top
                                     anchors.left:parent.left
@@ -1137,7 +1347,7 @@ ApplicationWindow{
                                     text:"monkey see"
                                     font.family:'Lexend Deca'
                                     font.pointSize:9
-                                    color:'#646669'
+                                    color:root_app.sub_color.toString()
                                 }
                             }
                             RowLayout{
@@ -1146,80 +1356,80 @@ ApplicationWindow{
                                 Layout.fillHeight:true
                                 spacing:20
                                 Button{
-                                    hoverColor:'white'
-                                    pressColor:'#646669'
+                                    hoverColor:root_app.text_color.toString()
+                                    pressColor:root_app.sub_color.toString()
                                     Layout.alignment:Qt.AlignBottom
                                     implicitHeight:monkeytype_name.height-15
                                     implicitWidth:28
                                     imageSource:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M528 448H48c-26.5 0-48-21.5-48-48V112c0-26.5 21.5-48 48-48h480c26.5 0 48 21.5 48 48v288c0 26.5-21.5 48-48 48zM128 180v-40c0-6.6-5.4-12-12-12H76c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-336 96v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-336 96v-40c0-6.6-5.4-12-12-12H76c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm288 0v-40c0-6.6-5.4-12-12-12H172c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h232c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12z"/></svg>'
                                     imageSize.width:20
                                     buttonText:''
-                                    imageColor:"#646669"
-                                    color:"#323437"
+                                    imageColor:root_app.sub_color.toString()
+                                    color:root_app.bg_color
                                 }
                                 Button{
-                                    hoverColor:'white'
-                                    pressColor:'#646669'
+                                    hoverColor:root_app.text_color.toString()
+                                    pressColor:root_app.sub_color.toString()
                                     Layout.alignment:Qt.AlignBottom
                                     implicitHeight:monkeytype_name.height-15
                                     implicitWidth:28
                                     imageSource:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M528 448H112c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h416c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm64-320c-26.5 0-48 21.5-48 48 0 7.1 1.6 13.7 4.4 19.8L476 239.2c-15.4 9.2-35.3 4-44.2-11.6L350.3 85C361 76.2 368 63 368 48c0-26.5-21.5-48-48-48s-48 21.5-48 48c0 15 7 28.2 17.7 37l-81.5 142.6c-8.9 15.6-28.9 20.8-44.2 11.6l-72.3-43.4c2.7-6 4.4-12.7 4.4-19.8 0-26.5-21.5-48-48-48S0 149.5 0 176s21.5 48 48 48c2.6 0 5.2-.4 7.7-.8L128 416h384l72.3-192.8c2.5 .4 5.1 .8 7.7 .8 26.5 0 48-21.5 48-48s-21.5-48-48-48z"/></svg>'
                                     imageSize.width:20
                                     buttonText:''
-                                    imageColor:"#646669"
-                                    color:"#323437"
+                                    imageColor:root_app.sub_color.toString()
+                                    color:root_app.bg_color
                                 }
                                 Button{
-                                    hoverColor:'white'
-                                    pressColor:'#646669'
+                                    hoverColor:root_app.text_color.toString()
+                                    pressColor:root_app.sub_color.toString()
                                     Layout.alignment:Qt.AlignBottom
                                     implicitHeight:monkeytype_name.height-15
                                     implicitWidth:28
                                     imageSource:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M20 424.2h20V279.8H20c-11 0-20-9-20-20V212c0-11 9-20 20-20h112c11 0 20 9 20 20v212.2h20c11 0 20 9 20 20V492c0 11-9 20-20 20H20c-11 0-20-9-20-20v-47.8c0-11 9-20 20-20zM96 0C56.2 0 24 32.2 24 72s32.2 72 72 72 72-32.2 72-72S135.8 0 96 0z"/></svg>'
                                     imageSize.height:height-8
                                     buttonText:''
-                                    imageColor:"#646669"
-                                    color:"#323437"
+                                    imageColor:root_app.sub_color.toString()
+                                    color:root_app.bg_color
                                 }
                                 Button{
-                                    hoverColor:'white'
-                                    pressColor:'#646669'
+                                    hoverColor:root_app.text_color.toString()
+                                    pressColor:root_app.sub_color.toString()
                                     Layout.alignment:Qt.AlignBottom
                                     implicitHeight:monkeytype_name.height-15
                                     implicitWidth:28
                                     imageSource:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8.2-74.3-7.8-109.2 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L88.7 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4 .6 11.2 5.5 14L67.3 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8.2 74.3 7.8 109.2 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"/></svg>'
                                     imageSize.height:height-8
                                     buttonText:''
-                                    imageColor:"#646669"
-                                    color:"#323437"
+                                    imageColor:root_app.sub_color.toString()
+                                    color:root_app.bg_color
                                 }
 
                                 Item{
                                     Layout.fillWidth:true
                                 }
                                 Button{
-                                    hoverColor:'white'
-                                    pressColor:'#646669'
+                                    hoverColor:root_app.text_color.toString()
+                                    pressColor:root_app.sub_color.toString()
                                     Layout.alignment:Qt.AlignBottom
                                     implicitHeight:monkeytype_name.height-15
                                     implicitWidth:28
                                     imageSource:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M224 512c35.3 0 64-28.7 64-64H160c0 35.4 28.7 64 64 64zm215.4-149.7c-19.3-20.8-55.5-52-55.5-154.3 0-77.7-54.5-139.9-127.9-155.2V32c0-17.7-14.3-32-32-32s-32 14.3-32 32v20.8C118.6 68.1 64.1 130.3 64.1 208c0 102.3-36.2 133.5-55.5 154.3-6 6.5-8.7 14.2-8.6 21.7 .1 16.4 13 32 32.1 32h383.8c19.1 0 32-15.6 32.1-32 .1-7.6-2.6-15.3-8.6-21.7z"/></svg>'
                                     imageSize.height:height-8
                                     buttonText:''
-                                    imageColor:"#646669"
-                                    color:"#323437"
+                                    imageColor:root_app.sub_color.toString()
+                                    color:root_app.bg_color
                                 }
                                 Button{
-                                    hoverColor:'white'
-                                    pressColor:'#646669'
+                                    hoverColor:root_app.text_color.toString()
+                                    pressColor:root_app.sub_color.toString()
                                     Layout.alignment:Qt.AlignBottom
                                     implicitHeight:monkeytype_name.height-15
                                     implicitWidth:28
                                     imageSource:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M313.6 304c-28.7 0-42.5 16-89.6 16-47.1 0-60.8-16-89.6-16C60.2 304 0 364.2 0 438.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-25.6c0-74.2-60.2-134.4-134.4-134.4zM400 464H48v-25.6c0-47.6 38.8-86.4 86.4-86.4 14.6 0 38.3 16 89.6 16 51.7 0 74.9-16 89.6-16 47.6 0 86.4 38.8 86.4 86.4V464zM224 288c79.5 0 144-64.5 144-144S303.5 0 224 0 80 64.5 80 144s64.5 144 144 144zm0-240c52.9 0 96 43.1 96 96s-43.1 96-96 96-96-43.1-96-96 43.1-96 96-96z"/></svg>'
                                     imageSize.height:height-8
                                     buttonText:''
-                                    imageColor:"#646669"
-                                    color:"#323437"
+                                    imageColor:root_app.sub_color.toString()
+                                    color:root_app.bg_color
                                 }
                             }
                         }
@@ -1250,7 +1460,7 @@ ApplicationWindow{
                                 Text {
                                     text:"wpm"
                                     font.pointSize: 23
-                                    color: "#646669"
+                                    color: root_app.sub_color.toString()
                                     horizontalAlignment: Text.AlignLeft
                                     font.family: "Roboto Mono"
                                     font.weight: 500
@@ -1258,7 +1468,7 @@ ApplicationWindow{
                                 Text {
                                     text: Math.round((textEdit.writtenWords/timer.timeStep)*60)
                                     font.pointSize: 50
-                                    color: "#e2b714"
+                                    color: root_app.main_color
                                     horizontalAlignment: Text.AlignLeft
                                     font.family: "Roboto Mono"
                                     font.weight: 500
@@ -1298,9 +1508,9 @@ ApplicationWindow{
                                     min: 1
                                     max: series1.count
                                     tickCount :Math.min(series1.count,15)
-                                    labelsColor:'#646669'
+                                    labelsColor:root_app.sub_color.toString()
                                     labelFormat: "%d"
-                                    gridLineColor :'#2e3033'
+                                    gridLineColor :root_app.sub_alt_color.toString()
                                     labelsFont:roboto
                                     // minorTickCount :2
                                     // visible: false
@@ -1309,9 +1519,9 @@ ApplicationWindow{
                                     id: axisY
                                     min: 0
                                     max: Math.max(timer.maxSpeed,timer.rawMaxSpeed) *1.1
-                                    labelsColor:'#646669'
+                                    labelsColor:root_app.sub_color.toString()
                                     labelFormat: "%d"
-                                    gridLineColor :'#2e3033'
+                                    gridLineColor :root_app.sub_alt_color.toString()
                                     labelsFont:roboto
                                     // labelsFont:'Roboto Mono'
                                     // visible:false
@@ -1330,7 +1540,7 @@ ApplicationWindow{
                                     id: series2
                                     axisX: axisX
                                     axisY: axisY
-                                    color: '#646669'
+                                    color: root_app.sub_color.toString()
                                     useOpenGL: true
                                     width: 3
                                     capStyle: Qt.RoundCap
@@ -1362,7 +1572,7 @@ ApplicationWindow{
                                         anchors.left:parent.left
                                         anchors.margins:5
 
-                                        text:"3"
+                                        text:"num"
                                         font.pointSize: 11
                                         color: "white"
                                         horizontalAlignment: Text.AlignLeft
@@ -1379,9 +1589,9 @@ ApplicationWindow{
                                             id:ticket_rep
                                             model:ListModel{
                                                 id:ticket_model
-                                                ListElement{color:"#ca4754";text:"errors";val:12}
-                                                ListElement{color:"#e2b714";text:"wpm";val:12}
-                                                ListElement{color:"#646669";text:"raw";val:12}
+                                                ListElement{text:"errors";val:12}
+                                                ListElement{text:"wpm";val:12}
+                                                ListElement{text:"raw";val:12}
 
 
                                             }
@@ -1390,7 +1600,7 @@ ApplicationWindow{
                                                 Rectangle{
                                                     width:14
                                                     height:14
-                                                    color:model.color
+                                                    color:[root_app.error_color.toString(),root_app.main_color.toString(),root_app.sub_color.toString()][index]
                                                 }
                                                 Text{
                                                     text:model.text+":"
@@ -1484,7 +1694,7 @@ ApplicationWindow{
                                     // }
                                     axisX: axisX
                                     axisY: axisY
-                                    color: '#e2b714'
+                                    color: root_app.main_color
                                     useOpenGL: true
                                     width: 3
                                     capStyle: Qt.RoundCap
@@ -1509,7 +1719,7 @@ ApplicationWindow{
                                 Text {
                                     text:"acc"
                                     font.pointSize: 23
-                                    color: "#646669"
+                                    color: root_app.sub_color.toString()
                                     horizontalAlignment: Text.AlignLeft
                                     font.family: "Roboto Mono"
                                     font.weight: 500
@@ -1520,7 +1730,7 @@ ApplicationWindow{
                                     //     console.log(textEdit.writtenWords/textEdit.wordCount)
                                     // }
                                     font.pointSize: 50
-                                    color: "#e2b714"
+                                    color: root_app.main_color
                                     horizontalAlignment: Text.AlignLeft
                                     font.family: "Roboto Mono"
                                     font.weight: 500
@@ -1548,7 +1758,7 @@ ApplicationWindow{
                                     Text {
                                         text:"test type"
                                         font.pointSize: 14
-                                        color: "#646669"
+                                        color: root_app.sub_color.toString()
                                         horizontalAlignment: Text.AlignLeft
                                         font.family: "Roboto Mono"
                                         font.weight: 500
@@ -1558,7 +1768,7 @@ ApplicationWindow{
                                         wrapMode: Text.WordWrap
                                         text:"words 85 english"
                                         font.pointSize: 12
-                                        color: "#e2b714"
+                                        color: root_app.main_color
                                         horizontalAlignment: Text.AlignLeft
                                         font.family: "Roboto Mono"
                                         font.weight: 500
@@ -1585,7 +1795,7 @@ ApplicationWindow{
                                     Text {
                                         text:"raw"
                                         font.pointSize: 14
-                                        color: "#646669"
+                                        color: root_app.sub_color.toString()
                                         horizontalAlignment: Text.AlignLeft
                                         font.family: "Roboto Mono"
                                         font.weight: 500
@@ -1595,7 +1805,7 @@ ApplicationWindow{
                                         wrapMode: Text.WordWrap
                                         text:  Math.round((textEdit.rawWrittenWords/timer.timeStep)*60)
                                         font.pointSize: 25
-                                        color: "#e2b714"
+                                        color: root_app.main_color
                                         horizontalAlignment: Text.AlignLeft
                                         font.family: "Roboto Mono"
                                         font.weight: 500
@@ -1622,7 +1832,7 @@ ApplicationWindow{
                                     Text {
                                         text:"characters"
                                         font.pointSize: 14
-                                        color: "#646669"
+                                        color: root_app.sub_color.toString()
                                         horizontalAlignment: Text.AlignLeft
                                         font.family: "Roboto Mono"
                                         font.weight: 500
@@ -1631,7 +1841,7 @@ ApplicationWindow{
                                         wrapMode: Text.WordWrap
                                         text: "51/1/0/0"
                                         font.pointSize: 25
-                                        color: "#e2b714"
+                                        color: root_app.main_color
                                         horizontalAlignment: Text.AlignLeft
                                         font.family: "Roboto Mono"
                                         font.weight: 500
@@ -1658,7 +1868,7 @@ ApplicationWindow{
                                     Text {
                                         text:"consistency"
                                         font.pointSize: 14
-                                        color: "#646669"
+                                        color: root_app.sub_color.toString()
                                         horizontalAlignment: Text.AlignLeft
                                         font.family: "Roboto Mono"
                                         font.weight: 500
@@ -1668,7 +1878,7 @@ ApplicationWindow{
                                         wrapMode: Text.WordWrap
                                         text: "84%"
                                         font.pointSize: 25
-                                        color: "#e2b714"
+                                        color: root_app.main_color
                                         horizontalAlignment: Text.AlignLeft
                                         font.family: "Roboto Mono"
                                         font.weight: 500
@@ -1697,7 +1907,7 @@ ApplicationWindow{
                                     Text {
                                         text:"time"
                                         font.pointSize: 14
-                                        color: "#646669"
+                                        color: root_app.sub_color.toString()
                                         horizontalAlignment: Text.AlignLeft
                                         font.family: "Roboto Mono"
                                         font.weight: 500
@@ -1707,7 +1917,7 @@ ApplicationWindow{
                                         wrapMode: Text.WordWrap
                                         text: timer.timeStep + "s"
                                         font.pointSize: 25
-                                        color: "#e2b714"
+                                        color: root_app.main_color
                                         horizontalAlignment: Text.AlignLeft
                                         font.family: "Roboto Mono"
                                         font.weight: 500
@@ -1726,10 +1936,13 @@ ApplicationWindow{
                                 Layout.fillWidth: true
                                 Layout.topMargin:40
                                 spacing:60
+                                focus:true
                                 Item{
                                     Layout.fillWidth:true
                                 }
                                 Repeater{
+                                    id:btns_repeater
+                                    property int focus_index:0
                                     model:ListModel{
                                         ListElement{text:"Next test";svg:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M285.5 273L91.1 467.3c-9.4 9.4-24.6 9.4-33.9 0l-22.7-22.7c-9.4-9.4-9.4-24.5 0-33.9L188.5 256 34.5 101.3c-9.3-9.4-9.3-24.5 0-33.9l22.7-22.7c9.4-9.4 24.6-9.4 33.9 0L285.5 239c9.4 9.4 9.4 24.6 0 33.9z"/></svg>'}
                                         ListElement{text:"Repeat test";svg:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Pro 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2024 Fonticons, Inc.--><path d="M142.9 142.9c62.2-62.2 162.7-62.5 225.3-1L327 183c-6.9 6.9-8.9 17.2-5.2 26.2s12.5 14.8 22.2 14.8H463.5c0 0 0 0 0 0H472c13.3 0 24-10.7 24-24V72c0-9.7-5.8-18.5-14.8-22.2s-19.3-1.7-26.2 5.2L413.4 96.6c-87.6-86.5-228.7-86.2-315.8 1C73.2 122 55.6 150.7 44.8 181.4c-5.9 16.7 2.9 34.9 19.5 40.8s34.9-2.9 40.8-19.5c7.7-21.8 20.2-42.3 37.8-59.8zM16 312v7.6 .7V440c0 9.7 5.8 18.5 14.8 22.2s19.3 1.7 26.2-5.2l41.6-41.6c87.6 86.5 228.7 86.2 315.8-1c24.4-24.4 42.1-53.1 52.9-83.7c5.9-16.7-2.9-34.9-19.5-40.8s-34.9 2.9-40.8 19.5c-7.7 21.8-20.2 42.3-37.8 59.8c-62.2 62.2-162.7 62.5-225.3 1L185 329c6.9-6.9 8.9-17.2 5.2-26.2s-12.5-14.8-22.2-14.8H48.4h-.7H40c-13.3 0-24 10.7-24 24z"/></svg>'}
@@ -1740,19 +1953,23 @@ ApplicationWindow{
 
                                     }
                                     delegate:Button{
-                                        hoverColor:'white'
-                                        pressColor:'#646669'
+                                        hoverColor:root_app.text_color.toString()
+                                        pressColor:root_app.sub_color.toString()
                                         Layout.alignment:Qt.AlignBottom
                                         implicitHeight:41-15 +10
                                         implicitWidth:28 +10
                                         imageSource:'data:image/svg+xml;utf8,'+model.svg
                                         imageSize.height:41-15-8
                                         buttonText:''
-                                        imageColor:"#646669"
-                                        color:"#323437"
+                                        imageColor:root_app.sub_color.toString()
+                                        color:root_app.bg_color
                                         borderWidth:2
-                                        borderColor:focus?"white":"transparent"
-                                        focus:index===0?true:false
+                                        borderColor:focus?root_app.text_color.toString():"transparent"
+                                        focus:index===btns_repeater.focus_index
+                                        
+                                        Keys.onTabPressed: {
+                                            btns_repeater.focus_index=(btns_repeater.focus_index + 1)%6
+                                        }
                                         Keys.onPressed:event=>{
                                             if (event.key !== 16777220){
                                                 return
@@ -1767,6 +1984,7 @@ ApplicationWindow{
                                             }
                                         }
                                         onClicked:{
+                                            btns_repeater.focus_index=index
                                             if(index===1){
                                                 textEdit.resetProperties(true)
                                                 finished_test.close()
@@ -1796,6 +2014,7 @@ ApplicationWindow{
                                                 anchors.leftMargin:-15
                                                 anchors.rightMargin:-15
                                                 color:Qt.rgba(0,0,0,0.8)
+                                                radius:2
                                                 z:-1
                                                 ColorImage{
                                                     anchors.bottom:parent.top
@@ -1843,6 +2062,290 @@ ApplicationWindow{
                 Layout.fillWidth:true
                 Layout.fillHeight:true
                 // Layout.maximumHeight:height
+            }
+            RowLayout{
+                Layout.fillWidth:true
+                Item{
+                    Layout.fillWidth:true
+                }
+                RowButton{
+                    id:pallet_btn
+                    hoverColor:root_app.text_color.toString()
+                    pressColor:root_app.sub_color.toString()
+                    // implicitWidth:content.width
+                    Layout.alignment:Qt.AlignBottom
+                    implicitHeight:16
+                    imageSource:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M512 256c0 .9 0 1.8 0 2.7c-.4 36.5-33.6 61.3-70.1 61.3H344c-26.5 0-48 21.5-48 48c0 3.4 .4 6.7 1 9.9c2.1 10.2 6.5 20 10.8 29.9c6.1 13.8 12.1 27.5 12.1 42c0 31.8-21.6 60.7-53.4 62c-3.5 .1-7 .2-10.6 .2C114.6 512 0 397.4 0 256S114.6 0 256 0S512 114.6 512 256zM128 288a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0-96a32 32 0 1 0 0-64 32 32 0 1 0 0 64zM288 96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm96 96a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg>'
+                    imageSize.height:height-4
+                    buttonText:'serika dark'
+                    fontWeight:500
+                    fontSize:9
+                    imageColor:checked? root_app.main_color:root_app.sub_color.toString()
+                    textColor:checked? root_app.main_color:root_app.sub_color.toString()
+                    color:"transparent"
+                    onClicked:{
+                        // checked=!checked
+                        // textEdit.punctuation=checked
+                        // textEdit.resetProperties(textEdit.repeated)
+                        changePallet.open()
+                    }
+                }
+                Popup {
+                    id:changePallet
+                    // Component.onCompleted:{
+                    //     open()
+                    // }
+                    parent:Overlay.overlay
+                    x:parent.width/2 - width/2
+                    y:parent.height/2 - height/2
+                    // anchors.centerIn:parent
+                    modal: true
+                    dim:true
+                    focus: true
+                    // closePolicy: Popup.NoAutoClose
+                    padding: 0
+                    onOpened: {
+                        
+                    }
+
+                    onClosed: {
+                        
+                    }
+                    
+                    enter: Transition {
+                        // grow_fade_in
+                        NumberAnimation {
+                            property: "opacity"
+                            from: 0.0
+                            to: 1.0
+                            easing.type: Easing.InOutQuad
+                            duration: 150
+                        }
+                    }
+
+                    exit: Transition {
+                        // shrink_fade_out
+                        NumberAnimation {
+                            property: "opacity"
+                            from: 1.0
+                            to: 0.0
+                            easing.type: Easing.InOutQuad
+                            duration: 150
+                        }
+                    }
+                    background: Rectangle {
+                        // radius: 6
+                        // color: root_app.bg_color
+                        color:Qt.rgba(0,0,0,0)
+                    }
+
+                    Rectangle {
+                        implicitWidth: root_app.width *0.45
+                        implicitHeight: root_app.height *0.7
+                        color: root_app.bg_color.toString()
+                        border.color: root_app.sub_alt_color.toString()
+                        border.width:3
+                        radius:10
+                        ColumnLayout{
+                            anchors.fill:parent
+                            spacing:0
+                            clip:true
+                            RowLayout{
+                                Layout.fillWidth:true
+                                Layout.preferredHeight:54
+                                Layout.maximumHeight:54
+                                spacing:0
+                                ColorImage{
+                                    Layout.alignment:Qt.AlignCenter
+                                    Layout.leftMargin:20
+                                    Layout.rightMargin:10
+                                    source:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>'
+                                    color:root_app.sub_color.toString()
+                                    sourceSize.width:14
+                                }
+                                TextField{
+                                    id:searchPallet
+                                    // Layout.alignment:Qt.AlignCenter
+                                    Layout.fillWidth:true
+                                    Layout.fillHeight:true
+                                    placeholderText:'Search...'
+                                    onTextChanged: palletsortFilterModel.update()
+                                }
+                            }
+                            SortFilterModel {
+                                id: palletsortFilterModel
+                                model: PalletListModel{
+                                    id:palletListModel
+
+                                }
+                                filterAcceptsItem: function(item) {
+                                    return item.name.includes(searchPallet.text)
+                                }
+                                lessThan: function(left, right) {
+                                    var leftVal = left.name;
+                                    var rightVal = right.name;
+                                    return leftVal < rightVal;
+                                }
+                                delegate: Rectangle{
+                                    id:palletItem
+                                    width:ListView.view.width
+                                    height:28
+                                    color:palletListView.currentIndex===index?root_app.text_color.toString():"transparent"
+                                    required property int index
+                                    required property var model
+                                    RowLayout{
+                                        // Layout.fillWidth:true
+                                        anchors.fill:parent
+                                        spacing:10
+                                        ColorImage{
+                                            Layout.leftMargin:15
+                                            source:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>'
+                                            sourceSize.height:14
+                                            color:palletListView.currentIndex===index?root_app.bg_color.toString():root_app.sub_color.toString()
+                                            opacity:palletListView.chosenPallet===index?1:0
+                                        }
+                                        Text {
+                                            Layout.fillWidth:true
+                                            text:model.name
+                                            font.pointSize: 10
+                                            color: palletListView.currentIndex===index?root_app.bg_color.toString():root_app.sub_color.toString()
+                                            horizontalAlignment: Text.AlignLeft
+                                            font.family: "Roboto Mono"
+                                            font.weight: 500
+                                        }
+                                        Rectangle{
+                                            Layout.rightMargin:10
+                                            Layout.preferredWidth:44+3*2
+                                            Layout.preferredHeight:12+6
+                                            radius:height
+                                            color:palletItem.model.bg_color.toString()
+                                            RowLayout{
+                                                anchors.fill:parent
+                                                anchors.leftMargin:3
+                                                anchors.rightMargin:3
+                                                spacing:4
+                                                Repeater{
+                                                    model:[palletItem.model.main_color.toString(),palletItem.model.sub_color.toString(),palletItem.model.text_color.toString()]
+                                                    delegate:Rectangle{
+                                                        width:12
+                                                        height:12
+                                                        radius:6
+                                                        color:modelData
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                    }
+                                    onEnabledChanged: state = ""
+                                    states: [
+                                        State {
+                                            name: "Hovering"
+                                            PropertyChanges {
+                                                target: root_app
+                                                main_color:model.main_color
+                                                caret_color:model.caret_color
+                                                sub_color:model.sub_color
+                                                sub_alt_color:model.sub_alt_color
+                                                bg_color:model.bg_color
+                                                text_color:model.text_color
+                                                error_color:model.error_color
+                                                error_extra_color:model.error_extra_color
+                                                colorful_error_color:model.colorful_error_color
+                                                colorful_error_extra_color:model.colorful_error_extra_color
+                                            }
+                                            PropertyChanges {
+                                                target: pallet_btn
+                                                buttonText:model.name
+                                            }
+                                        },
+                                        State {
+                                            name: ""
+                                            PropertyChanges {
+                                                target: root_app
+                                                main_color:palletListModel.get(palletListView.chosenPallet).main_color
+                                                caret_color:palletListModel.get(palletListView.chosenPallet).caret_color
+                                                sub_color:palletListModel.get(palletListView.chosenPallet).sub_color
+                                                sub_alt_color:palletListModel.get(palletListView.chosenPallet).sub_alt_color
+                                                bg_color:palletListModel.get(palletListView.chosenPallet).bg_color
+                                                text_color:palletListModel.get(palletListView.chosenPallet).text_color
+                                                error_color:palletListModel.get(palletListView.chosenPallet).error_color
+                                                error_extra_color:palletListModel.get(palletListView.chosenPallet).error_extra_color
+                                                colorful_error_color:palletListModel.get(palletListView.chosenPallet).colorful_error_color
+                                                colorful_error_extra_color:palletListModel.get(palletListView.chosenPallet).colorful_error_extra_color
+                                            }
+                                            PropertyChanges {
+                                                target: pallet_btn
+                                                buttonText:palletListModel.get(palletListView.chosenPallet).name
+                                            }
+                                        }
+                                    ]
+
+                                    //define transmission for the states
+                                    transitions: [
+                                        Transition {
+                                            from: ""
+                                            to: "Hovering"
+                                            ColorAnimation {
+                                                duration: 150
+                                            }
+                                        },
+                                        Transition {
+                                            from: "*"
+                                            to: ""
+                                            ColorAnimation {
+                                                duration: 150
+                                            }
+                                        }
+                                    ]
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        cursorShape: Qt.PointingHandCursor
+                                        hoverEnabled: palletItem.enabled 
+                                        acceptedButtons: Qt.LeftButton
+                                        onClicked: {
+                                            palletListView.chosenPallet=index
+                                            // console.log(root_app.sub_color)
+                                            textEdit.resetProperties(textEdit.repeated)
+                                        }
+                                        onEntered: {
+                                            // palletItem.color = root_app.text_color
+                                            palletListView.currentIndex=index
+                                            palletItem.state = 'Hovering';
+                                        }
+                                        onExited: {
+                                            // palletItem.color= "transparent"
+                                            palletItem.state = '';
+                                        }
+                                    }
+                                }
+
+                            }
+                            ListView{
+                                id:palletListView
+                                Layout.fillWidth:true
+                                Layout.fillHeight:true
+                                Layout.margins:5
+                                clip:true
+                                property int chosenPallet:2
+                                
+                                // highlightMoveDuration: 0
+                                // // boundsBehavior :Flickable.StopAtBounds
+                                // highlight: Rectangle {
+                                //     color: root_app.text_color.toString()
+                                // }
+                                T.ScrollIndicator.vertical: ScrollIndicator { }
+                                // Layout.preferredHeight:parent.height
+                                // Layout.preferredWidth:parent.width
+                                model: palletsortFilterModel
+                            }
+                        }
+
+                    }
+                    Overlay.modal: Rectangle {
+                        color: Qt.rgba(0, 0, 0, 0)
+                    }
+                }
             }
         }
 

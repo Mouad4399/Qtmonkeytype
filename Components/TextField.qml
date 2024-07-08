@@ -33,7 +33,7 @@ TextField {
     placeholderText: qsTr("Search...")
     font.pointSize: 12
     font.family:"Roboto Mono"
-    color: "white"
+    color: root_app.text_color.toString()
     background: Rectangle {
         id:innerRect
         // anchors.fill:parent
@@ -51,11 +51,11 @@ TextField {
     cursorVisible:true
     selectedTextColor: "#FFFFFF"
     selectionColor: "#e2b714"
-    placeholderTextColor: "#8d8d8d"
+    placeholderTextColor: root_app.sub_color.toString()
     verticalAlignment: Text.AlignVCenter
     cursorDelegate:Rectangle {
         width: 1
         height:14
-        color: 'yellow'
+        color: root_app.caret_color.toString()
     }
 }
