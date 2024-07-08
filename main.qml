@@ -639,7 +639,11 @@ ApplicationWindow{
                         textEdit.repeated=isrepeated
                         series1.removePoints(0,series1.count)
                         series2.removePoints(0,series2.count)
-                        paceAnimation.complete()
+                        // if(textEdit.repeated){
+                        //     paceAnimation.cnt=textEdit.lineCount-1
+                        //     paceAnimation.complete()
+                        // }
+
                     }
                     wrapMode: TextEdit.Wrap
                     textFormat: TextEdit.RichText
@@ -695,7 +699,11 @@ ApplicationWindow{
                             to:textEdit.positionToRectangle(textEdit.positionAt(textEdit.contentWidth,customPace_rect.y)).x
                             duration: (textEdit.positionAt(textEdit.contentWidth,customPace_rect.y)-textEdit.positionAt(0,customPace_rect.y))*60/(customPace_btn.pace*5)*1000
                             onFinished:{
+                                // console.log('round')
                                 if(paceAnimation.cnt===textEdit.lineCount-1){
+                                    // console.log('finish')
+                                    paceAnimation.cnt=0
+                                    customPace_rect.y=0
                                     return
                                 }
                                 customPace_rect.y=customPace_rect.y+32
@@ -828,8 +836,15 @@ ApplicationWindow{
                         if(textEdit.repeated===false){
                             return
                         }
-                        if(active){
+                        if(active && cursorPosition===0){
+                            // console.log('am active')
                             paceAnimation.running=true
+                        }
+                    }
+                    onRepeatedChanged:{
+                        if (!repeated){
+                            paceAnimation.cnt=textEdit.lineCount-1
+                            paceAnimation.complete()
                         }
                     }
 
@@ -972,7 +987,11 @@ ApplicationWindow{
             closePolicy: Popup.NoAutoClose
             padding: 0
             onOpened: {
-                paceAnimation.complete()
+                if(textEdit.repeated){
+
+                    paceAnimation.cnt=textEdit.lineCount-1
+                    paceAnimation.complete()
+                }
                 axisX.min=1
                 
             }
