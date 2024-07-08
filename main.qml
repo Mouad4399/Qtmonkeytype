@@ -639,6 +639,7 @@ ApplicationWindow{
                         textEdit.repeated=isrepeated
                         series1.removePoints(0,series1.count)
                         series2.removePoints(0,series2.count)
+                        paceAnimation.complete()
                     }
                     wrapMode: TextEdit.Wrap
                     textFormat: TextEdit.RichText
