@@ -107,6 +107,7 @@ AbstractButton {
     signal exited
     MouseArea {
         id: mouseArea
+        enabled:button.enabled
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
         hoverEnabled: button.enabled 

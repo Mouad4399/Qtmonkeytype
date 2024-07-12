@@ -32,7 +32,19 @@ ApplicationWindow{
     property color colorful_error_color: Qt.color('#ca4754')
     property color colorful_error_extra_color: Qt.color('#7e2a33')
 
-
+    MouseArea{
+        // it is better to detect mouse movement
+        anchors.fill:parent
+        hoverEnabled:true
+        onPositionChanged: {
+            // console.log(Math.random())
+            textEdit.active=false
+        }
+        onClicked:{
+            // console.log('clicked')
+            textEdit.focus=true
+        }
+    }
     ColumnLayout{
         anchors.fill:parent
         anchors.margins:34
@@ -227,6 +239,7 @@ ApplicationWindow{
                             radius:4
                         }
                         RowButton{
+                            id:timeMode
                             hoverColor:root_app.text_color.toString()
                             pressColor:root_app.sub_color.toString()
                             Layout.alignment:Qt.AlignBottom
@@ -243,10 +256,20 @@ ApplicationWindow{
                             color:"transparent"
                             onClicked:{
                                 checked=true
+                                // textEdit.wordCount=50
+                                textEdit.resetProperties(textEdit.repeated)
+                            }
+                            onCheckedChanged:{
+                                if(checked){
+                                    //apply default values when first time checked
+                                    textEdit.wordCount=50
+                                    timer.timeMode_limit=60
+                                }
                             }
                             ButtonGroup.group:typeMode_btns
                         }
                         RowButton{
+                            id:wordsMode
                             hoverColor:root_app.text_color.toString()
                             pressColor:root_app.sub_color.toString()
                             Layout.alignment:Qt.AlignBottom
@@ -264,6 +287,13 @@ ApplicationWindow{
                             color:"transparent"
                             onClicked:{
                                 checked=true
+                                textEdit.resetProperties(textEdit.repeated)
+                            }
+                            onCheckedChanged:{
+                                //apply default values when first time checked
+                                if(checked){
+                                    textEdit.wordCount=50
+                                }
                             }
                             ButtonGroup.group:typeMode_btns
                         }
@@ -284,6 +314,7 @@ ApplicationWindow{
                             color:"transparent"
                             onClicked:{
                                 checked=true
+                                textEdit.resetProperties(textEdit.repeated)
                             }
                             ButtonGroup.group:typeMode_btns
                         }
@@ -305,6 +336,7 @@ ApplicationWindow{
                             color:"transparent"
                             onClicked:{
                                 checked=true
+                                textEdit.resetProperties(textEdit.repeated)
                             }
                             ButtonGroup.group:typeMode_btns
                         }
@@ -326,6 +358,7 @@ ApplicationWindow{
                             color:"transparent"
                             onClicked:{
                                 checked=true
+                                textEdit.resetProperties(textEdit.repeated)
                             }
                             ButtonGroup.group:typeMode_btns
                         }
@@ -336,7 +369,15 @@ ApplicationWindow{
                             radius:4
                         }
                         Repeater{
-                            model:[10,25 ,50 ,100]
+                            model:timeMode.checked?[15,30,60,120]:[10,25,50,100]
+                            // onModelChanged:{
+                            //         if(timeMode.checked){
+                            //             timer.timeMode_limit=60
+                            //         }else{
+                            //             textEdit.wordCount=50
+                            //         }
+                            //         textEdit.resetProperties(textEdit.repeated)
+                            // }
                             delegate :Button{
                                 hoverColor:root_app.text_color.toString()
                                 pressColor:root_app.sub_color.toString()
@@ -353,9 +394,16 @@ ApplicationWindow{
                                 checked:index===2
                                 onClicked:{
                                     checked=true
-                                    textEdit.wordCount=parseInt(modelData)
+                                    // console.log(timer.timeStep)
+                                    if(timeMode.checked){
+                                        timer.timeMode_limit=parseInt(modelData)
+                                    }else{
+                                        textEdit.wordCount=parseInt(modelData)
+                                    }
                                     textEdit.resetProperties(textEdit.repeated)
+                                    
                                 }
+                               
                             }
                         }
                         Button{
@@ -533,7 +581,7 @@ ApplicationWindow{
             }
             Behavior on opacity{
                 NumberAnimation {
-                    duration: 300
+                    duration: 250
                     easing.type: Easing.InOutQuad
                 }
             }
@@ -550,7 +598,7 @@ ApplicationWindow{
                 anchors.bottom:parent.top
                 anchors.bottomMargin:10
                 opacity:!textEdit.active ? 0:1
-                text: textEdit.cursorPosition + "/" + textEdit.length
+                text: timeMode.checked?timer.timeStep + "/"+timer.timeMode_limit:textEdit.cursorPosition + "/" + textEdit.length
                 font.pointSize: 16
                 color: root_app.main_color
                 horizontalAlignment: Text.AlignLeft
@@ -583,15 +631,54 @@ ApplicationWindow{
                 
                 TextEdit{
                     
+                    // onTextChanged:{
+                    //     // console.log('jel')
+                        
+                    //     // console.log(textEdit.positionToRectangle(textEdit.positionAt(textEdit.contentWidth,cursorDelegate_.y)).x)
+                    //     // if(textEdit.positionToRectangle(textEdit.positionAt(textEdit.contentWidth,cursorDelegate_.y)).x===0 && textEdit.positionToRectangle(textEdit.positionAt(textEdit.contentWidth,cursorDelegate_.y)).y/32 + 1=== lineCount-3){
+                    //     //     console.log('before last')
+                    //     // }
+                    // }
+                    
                     id:textEdit
                     width:flick.width
                     onCursorRectangleChanged: flick.ensureVisible(cursorRectangle)
                     selectByMouse :false
                     focus:true
+                    opacity:0
                     property bool punctuation
                     property bool numbers
-                    function generateText() {
-                        var numWords=textEdit.wordCount
+
+                    // Behavior on rawText{
+                    SequentialAnimation {
+                        id:refreshTextAnimation
+                        NumberAnimation  {
+                            target: textEdit
+                            property: "opacity"
+                            // from: 0.0
+                            to: 0.0
+                            // easing.type: Easing.InOutQuad
+                            duration: 0
+                            // running:true
+                        }
+                        PauseAnimation{
+                            duration:100
+                        }
+                        NumberAnimation  {
+                            target: textEdit
+                            property: "opacity"
+                            // from: 0.0
+                            to: 1.0
+                            easing.type: Easing.OutCubic
+                            duration: 300
+                            // running:true
+                        }
+                    }
+
+                    function generateText(now=textEdit.wordCount) {
+                        //now=numberofwords
+                        // console.log('generate: ->'+now)
+                        var numWords=now
                         var includePunctuation=textEdit.punctuation
                         var includeNumbers=textEdit.numbers
                         var words = [
@@ -613,20 +700,32 @@ ApplicationWindow{
                             if (includePunctuation && Math.random() < 0.3) {
                                 word += punctuation[Math.floor(Math.random() * punctuation.length)];
                             }
-                            if(i===0){
+                            if(i===0 && now===textEdit.wordCount){
+                                // make sure it gets the most first word in the text and not the new generated timeMode text
                                 textEdit.currentWord=word
+                                // console.log(textEdit.currentWord)
                             }
                             text += word + " ";
                         }
-                        textEdit.rawText=text.trim()
-                        textEdit.text = "<p style='line-height:100%' >" +text.trim()+"</p>"
+                        return text
                     }
 
                     function resetProperties(isrepeated){
                         if(isrepeated){
-                            textEdit.text="<p style='line-height:100%' >" +textEdit.rawText+"</p>"
+                            // if you want to maintain the text and reset everything
+                            refreshTextAnimation.start()
+                            // console.log((textEdit.rawText)+ "<")
+                            // console.log((textEdit.rawText.trim())+ "<")
+                            textEdit.text="<p style='line-height:100%' >" +(timeMode.checked?textEdit.rawText:textEdit.rawText.trim())+"</p>"
                         }else{
-                            generateText()
+                            var genText=generateText()
+                            if(!timeMode.checked){
+                                genText=genText.trim()
+                            }
+                            refreshTextAnimation.start()
+                            textEdit.rawText=genText
+                            textEdit.text = "<p style='line-height:100%' >" +genText+"</p>"
+
                         }
                         textEdit.cursorPosition=0
                         textEdit.active=false
@@ -639,6 +738,8 @@ ApplicationWindow{
                         textEdit.repeated=isrepeated
                         series1.removePoints(0,series1.count)
                         series2.removePoints(0,series2.count)
+                        // console.log('this is cnt : '+paceAnimation.cnt)
+                        // console.log('ReSet')
                         // if(textEdit.repeated){
                         //     paceAnimation.cnt=textEdit.lineCount-1
                         //     paceAnimation.complete()
@@ -651,6 +752,7 @@ ApplicationWindow{
                     font.pointSize:18
                     property int wordCount:50
                     Component.onCompleted:{
+                        //initialising
                         resetProperties(false)
                     }
                     color:root_app.sub_color.toString()
@@ -675,12 +777,25 @@ ApplicationWindow{
                                 duration: 300
                             }
                         }
+                        onYChanged:{
+                                // console.log('hello')
+                            if(timeMode.checked && textEdit.active){
+                                // console.log('added')
+                                textEdit.insert(textEdit.length,textEdit.generateText(15))
+                            }
+                            
+                        }
                         SequentialAnimation on opacity { 
-                            alwaysRunToEnd:true
+                            // alwaysRunToEnd:true
                             running: !textEdit.active; 
                             loops: Animation.Infinite;
                             NumberAnimation { to: 0; duration: 500; easing.type: "OutQuad"}
                             NumberAnimation { to: 1; duration: 500; easing.type: "InQuad"}
+                            onRunningChanged:{
+                                if(!running){
+                                    cursorDelegate_.opacity=1
+                                }
+                            }
                         }
                     }
                     Rectangle {
@@ -699,7 +814,7 @@ ApplicationWindow{
                             to:textEdit.positionToRectangle(textEdit.positionAt(textEdit.contentWidth,customPace_rect.y)).x
                             duration: (textEdit.positionAt(textEdit.contentWidth,customPace_rect.y)-textEdit.positionAt(0,customPace_rect.y))*60/(customPace_btn.pace*5)*1000
                             onFinished:{
-                                // console.log('round')
+                                // console.log('round'+ paceAnimation.cnt)
                                 if(paceAnimation.cnt===textEdit.lineCount-1){
                                     // console.log('finish')
                                     paceAnimation.cnt=0
@@ -716,6 +831,7 @@ ApplicationWindow{
                     }
                     Keys.onPressed:event=>{
                         active=true
+                        // console.log(textEdit.rawWrittenWords)
 
                         if (event.key === Qt.Key_Left){
                             event.accepted = true
@@ -787,9 +903,15 @@ ApplicationWindow{
 
                         }
                         if (event.key === Qt.Key_Space){
-                            rawWrittenWords++
+                            //if last word ,space is no longer jumping so rawWrittenWords shouldn't increase
+                            if(getText(cursorPosition,textEdit.length).indexOf(" ")!==-1){
+                                // rawWrittenWords is Ideal writtenWords
+                                rawWrittenWords++
+                                // console.log('rawwritten: '+rawWrittenWords)
+                            }
                             if(cursorPosition-currentWordIndex===currentWord.length){
                                 writtenWords++
+                                // console.log('Written: '+writtenWords)
                             }
                             cursorPosition = cursorPosition+ getText(cursorPosition,textEdit.length).indexOf(" ")+1
                             currentWord=getText(cursorPosition,cursorPosition+getText(cursorPosition,textEdit.length).indexOf(" "))
@@ -818,6 +940,8 @@ ApplicationWindow{
                         if(cursorPosition === length){
                             textEdit.writtenWords++
                             textEdit.rawWrittenWords++
+                            // console.log('raw is :' +rawWrittenWords)
+                            // console.log(textEdit.wordCount)
                             finished_test.open()
                             active=false
                         }
@@ -842,9 +966,16 @@ ApplicationWindow{
                         }
                     }
                     onRepeatedChanged:{
+                        //the paceCursor should stop when !repeated
                         if (!repeated){
-                            paceAnimation.cnt=textEdit.lineCount-1
+                            // console.log('1cnt is : '+paceAnimation.cnt)
                             paceAnimation.complete()
+                            // console.log('2cnt is : '+paceAnimation.cnt)
+                            if(paceAnimation.cnt!==0){
+
+                                paceAnimation.cnt=textEdit.lineCount-1
+                                paceAnimation.complete()
+                            }
                         }
                     }
 
@@ -853,12 +984,15 @@ ApplicationWindow{
                         interval: 1000
                         property int timeStep: 1
                         repeat: true
-                        running: textEdit.active
+                        running: textEdit.active?timeMode.checked?timeStep<timeMode_limit+1:true:false
                         // triggeredOnStart:true
                         property int maxSpeed:0
                         property int rawMaxSpeed:0
+                        property int timeMode_limit:60
                         onTriggered: {
+                            // console.log(timeStep+ "/" + timeMode_limit)
 
+                            
                             // for cpm
                             // var speed=Math.round((textEdit.cursorPosition/timeStep)*60)
                             // series1.append(timeStep,speed)
@@ -868,6 +1002,7 @@ ApplicationWindow{
 
                             // for wpm
                             var speed=Math.round((textEdit.writtenWords/timeStep)*60)
+                            // console.log(timeStep)
                             series1.append(timeStep,speed)
                             if(speed> maxSpeed){
                                 maxSpeed=speed
@@ -880,17 +1015,22 @@ ApplicationWindow{
 
                             timeStep++
                         }
+                        onRunningChanged:{
+                            if(timeMode.checked && timeStep>=timeMode_limit+1){
+                                finished_test.open()
+                            }
+                        }
                     }
 
                     MouseArea{
                         anchors.fill:parent
                         hoverEnabled:true
                         onPositionChanged: {
-                            
-                            textEdit.active=false
+                            // console.log(Math.random())
+                            // textEdit.active=false
                         }
                         onClicked:{
-                            textEdit.focus=true
+                            // textEdit.focus=true
                         }
                     }
                 }
@@ -987,7 +1127,10 @@ ApplicationWindow{
             closePolicy: Popup.NoAutoClose
             padding: 0
             onOpened: {
-                if(textEdit.repeated){
+                // console.log('1on open cnt is : '+paceAnimation.cnt)
+                paceAnimation.complete()
+                // console.log('2on open cnt is : '+paceAnimation.cnt)
+                if(paceAnimation.cnt!==0){
 
                     paceAnimation.cnt=textEdit.lineCount-1
                     paceAnimation.complete()
@@ -997,8 +1140,8 @@ ApplicationWindow{
             }
 
             onClosed: {
-                series1.removePoints(0,series1.count)
-                series2.removePoints(0,series2.count)
+                // series1.removePoints(0,series1.count)
+                // series2.removePoints(0,series2.count)
             }
             
             enter: Transition {
@@ -1401,7 +1544,7 @@ ApplicationWindow{
                                 font.weight: 500
                             }
                             Text {
-                                text:Math.round((textEdit.writtenWords/textEdit.wordCount)*100) +"%"
+                                text:Math.round((textEdit.writtenWords/textEdit.rawWrittenWords)*100) +"%"
                                 font.pointSize: 50
                                 color: root_app.main_color
                                 horizontalAlignment: Text.AlignLeft
@@ -1548,7 +1691,7 @@ ApplicationWindow{
                                 Text {
                                     // Layout.fillWidth:true
                                     wrapMode: Text.WordWrap
-                                    text: timer.timeStep + "s"
+                                    text: timer.timeStep-1 + "s"
                                     font.pointSize: 25
                                     color: root_app.main_color
                                     horizontalAlignment: Text.AlignLeft
