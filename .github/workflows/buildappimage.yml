@@ -50,9 +50,9 @@ jobs:
           ls
           pwd
         "
-
-        # Now pull out the AppImage
-        docker cp appimage-builder-container:/workspace/build .
+        
+        ls
+        pwd
 
     - name: List Artifacts
       run: |
