@@ -59,7 +59,7 @@ ApplicationWindow{
                 spacing:6
                 ColorImage{
                     Layout.topMargin:5
-                    source:'./images/logo.svg'
+                    source:'./Images/logo.svg'
                     color:root_app.main_color
                     sourceSize.height:23
                 }
