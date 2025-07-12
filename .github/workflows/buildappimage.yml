@@ -44,8 +44,7 @@ jobs:
         "
 
         # Now pull out the AppImage
-        mkdir -p build/artifacts
-        docker cp appimage-builder-container:/workspace/build/*.AppImage build/artifacts/
+        docker cp appimage-builder-container:/workspace/build/*.AppImage .
 
         # Stop & remove the container manually
         docker rm -f appimage-builder-container
