@@ -50,17 +50,14 @@ jobs:
           ls
           pwd
         "
-        
-        ls
-        pwd
 
     - name: List Artifacts
       run: |
-        ls
+        ls ./build
 
     - name: Upload AppImage
       uses: softprops/action-gh-release@v1
       with:
-        files: '*.AppImage'
+        files: 'build/*.AppImage'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
