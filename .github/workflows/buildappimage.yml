@@ -25,10 +25,10 @@ jobs:
           make install DESTDIR=AppDir
 
           mkdir -p AppDir/usr/share/icons
-          cp ../images/logo.svg AppDir/usr/share/icons
+          cp ../Images/logo.svg AppDir/usr/share/icons
 
-          cd ..
-          sed -i 's/version: .*/version: ${{ github.event.release.tag_name }}/' AppImageBuilder.yml
+          cp ../AppImageBuilder.yml AppImageBuilder.yml
+          sed -i '/app_info:/,/^[^ ]/ s/^\(\s*version:\s*\).*/\1${{ github.event.release.tag_name }}/' AppImageBuilder.yml
 
           appimage-builder --recipe AppImageBuilder.yml
         "

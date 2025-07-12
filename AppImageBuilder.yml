@@ -6,7 +6,7 @@ script:
 - cp -r /opt/qt/6.5.2/gcc_64/qml AppDir/opt/qt/6.5.2/gcc_64/
 - cp -r /opt/qt/6.5.2/gcc_64/resources AppDir/opt/qt/6.5.2/gcc_64/
 AppDir:
-  path: /root/Github-Workflow-Attempt/build/AppDir
+  path: /root/Qtmonkeytype/build/AppDir
   app_info:
     id: com.mouad.qtmonkeytype
     name: Qtmonkeytype
