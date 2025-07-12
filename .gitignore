@@ -34,3 +34,4 @@ ENV/
 *.swp
 *.swo
 *.log
+CMakeLists.txt.user
