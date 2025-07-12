@@ -15,38 +15,41 @@ jobs:
 
     - name: Build AppImage
       run: |
-        docker run --rm \
+        docker run -dit \
           --privileged \
           -v "${{ github.workspace }}":/workspace \
           -w /workspace \
+          --name appimage-builder-container \
           carlonluca/qt-dev:6.5.2 \
-          bash -c "
-            set -ex
+          bash
 
+        # Run the commands inside the container
+        docker exec appimage-builder-container bash -c "
+          set -ex
+          mkdir -p build && cd build
+          /opt/qt/6.5.2/gcc_64/bin/qt-cmake .. \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX=/usr
+          cmake --build .
+          make install DESTDIR=AppDir
 
-            # Verify files
-            pwd
+          mkdir -p AppDir/usr/share/icons
+          cp ../Images/logo.svg AppDir/usr/share/icons/
 
-            mkdir -p build && cd build
-            /opt/qt/6.5.2/gcc_64/bin/qt-cmake .. \
-              -DCMAKE_BUILD_TYPE=Release \
-              -DCMAKE_INSTALL_PREFIX=/usr
-            cmake --build .
-            make install DESTDIR=AppDir
-            
-            mkdir -p AppDir/usr/share/icons
-            cp ../Images/logo.svg AppDir/usr/share/icons/
-            
-            cp ../AppImageBuilder.yml .
-            sed -i '/app_info:/,/^[^ ]/ s/^\(\s*version:\s*\).*/\1${{ github.event.release.tag_name }}/' AppImageBuilder.yml
-            
-            # Verify files
-            ls
-            
-            appimage-builder --recipe AppImageBuilder.yml
+          cp ../AppImageBuilder.yml .
 
+          sed -i '/app_info:/,/^[^ ]/ s/^\(\s*version:\s*\).*/\1${{ github.event.release.tag_name }}/' AppImageBuilder.yml
 
-          "
+          appimage-builder --recipe AppImageBuilder.yml
+        "
+
+        # Now pull out the AppImage
+        mkdir -p build/artifacts
+        docker cp appimage-builder-container:/workspace/build/*.AppImage build/artifacts/
+
+        # Stop & remove the container manually
+        docker rm -f appimage-builder-container
+
 
     - name: List Artifacts
       run: |
