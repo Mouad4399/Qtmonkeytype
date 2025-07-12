@@ -12,26 +12,38 @@ jobs:
     - name: Checkout source
       uses: actions/checkout@v4
 
-    - name: Pull Qt Docker image
-      run: docker pull carlonluca/qt-dev:6.5.2
-
-    - name: Build AppImage in Docker
+    - name: Build AppImage
       run: |
-        docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace carlonluca/qt-dev:6.5.2 bash -c "
-
-          mkdir build && cd build
-          /opt/qt/6.5.2/gcc_64/bin/qt-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
-          cmake --build .
-          make install DESTDIR=AppDir
-
-          mkdir -p AppDir/usr/share/icons
-          cp ../Images/logo.svg AppDir/usr/share/icons
-
-          cp ../AppImageBuilder.yml AppImageBuilder.yml
-          sed -i '/app_info:/,/^[^ ]/ s/^\(\s*version:\s*\).*/\1${{ github.event.release.tag_name }}/' AppImageBuilder.yml
-
-          appimage-builder --recipe AppImageBuilder.yml
-        "
+        # Run everything in a single Docker command
+        docker run --rm \
+          --privileged \
+          -v "${{ github.workspace }}":/workspace \
+          -w /workspace \
+          carlonluca/qt-dev:6.5.2 \
+          bash -c "
+            set -ex  # Enable debugging and exit on error
+            
+            # Build steps
+            mkdir -p build && cd build
+            /opt/qt/6.5.2/gcc_64/bin/qt-cmake .. \
+              -DCMAKE_BUILD_TYPE=Release \
+              -DCMAKE_INSTALL_PREFIX=/usr
+            cmake --build .
+            
+            # Install to AppDir
+            make install DESTDIR=AppDir
+            
+            # Prepare icons
+            mkdir -p AppDir/usr/share/icons
+            cp ../Images/logo.svg AppDir/usr/share/icons/
+            
+            # Prepare AppImageBuilder config
+            cp ../AppImageBuilder.yml .
+            sed -i '/app_info:/,/^[^ ]/ s/^\(\s*version:\s*\).*/\1${{ github.event.release.tag_name }}/' AppImageBuilder.yml
+            
+            # Build AppImage
+            appimage-builder --recipe AppImageBuilder.yml
+          "
 
     - name: Upload AppImage
       uses: softprops/action-gh-release@v1
