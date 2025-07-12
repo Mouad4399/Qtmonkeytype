@@ -41,10 +41,13 @@ jobs:
           sed -i '/app_info:/,/^[^ ]/ s/^\(\s*version:\s*\).*/\1${{ github.event.release.tag_name }}/' AppImageBuilder.yml
 
           appimage-builder --recipe AppImageBuilder.yml
+
+          ls
+          pwd
         "
 
         # Now pull out the AppImage
-        docker cp appimage-builder-container:/workspace/build/*.AppImage .
+        docker cp appimage-builder-container:/workspace/build .
 
         # Stop & remove the container manually
         docker rm -f appimage-builder-container
