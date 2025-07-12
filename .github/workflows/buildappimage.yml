@@ -13,6 +13,11 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: List Directory
+      run: |
+        ls
+        pwd
+
     - name: Build AppImage
       run: |
         docker run -dit \
@@ -48,10 +53,6 @@ jobs:
 
         # Now pull out the AppImage
         docker cp appimage-builder-container:/workspace/build .
-
-        # Stop & remove the container manually
-        docker rm -f appimage-builder-container
-
 
     - name: List Artifacts
       run: |
