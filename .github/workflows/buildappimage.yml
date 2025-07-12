@@ -13,11 +13,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: List Directory
-      run: |
-        ls
-        pwd
-
     - name: Build AppImage
       run: |
         docker run -dit \
@@ -46,9 +41,6 @@ jobs:
           sed -i '/app_info:/,/^[^ ]/ s/^\(\s*version:\s*\).*/\1${{ github.event.release.tag_name }}/' AppImageBuilder.yml
 
           appimage-builder --recipe AppImageBuilder.yml
-
-          ls
-          pwd
         "
 
     - name: List Artifacts
