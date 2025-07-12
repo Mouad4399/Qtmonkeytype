@@ -11,7 +11,7 @@ AbstractButton {
     property color color: "#065AD8"
     property color textColor: "white"
     property real factorOfTint:1.2
-    property color hoverColor: button.color == Qt.rgba(1, 1, 1, 1) ? "#f0f0f0" : Qt.lighter(button.color, factorOfTint)
+    property color hoverColor: button.color === Qt.rgba(1, 1, 1, 1) ? "#f0f0f0" : Qt.lighter(button.color, factorOfTint)
     property color pressColor: Qt.darker(button.color, factorOfTint)
     property int fontSize: 12
     // property int fontFamily: Fonts.inter
@@ -26,7 +26,7 @@ AbstractButton {
     property bool enabledEffect:button.buttonText!==''
     property color disabledBgColor: "transparent"
     property color disabledImageColor: "transparent"
-    property var scaleTo: 0.96
+    property real scaleTo: 0.96
     scale: state === "Pressed" ? scaleTo : 1.0
     onEnabledChanged: state = ""
 
@@ -101,7 +101,7 @@ AbstractButton {
             }
         }
     ]
-    signal clicked
+    // signal clicked
     signal hoveredIn
     signal entered
     signal exited

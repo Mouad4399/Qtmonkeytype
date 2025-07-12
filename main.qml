@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
-import QtCharts 
+import QtCharts
 import QtQuick.Templates as T
 
 import './Components'
@@ -401,9 +401,9 @@ ApplicationWindow{
                                         textEdit.wordCount=parseInt(modelData)
                                     }
                                     textEdit.resetProperties(textEdit.repeated)
-                                    
+
                                 }
-                               
+
                             }
                         }
                         Button{
@@ -508,12 +508,12 @@ ApplicationWindow{
                         // closePolicy: Popup.NoAutoClose
                         padding: 0
                         onOpened: {
-                            
+
                         }
 
                         onClosed: {
                         }
-                        
+
                         enter: Transition {
                             // grow_fade_in
                             NumberAnimation {
@@ -586,7 +586,7 @@ ApplicationWindow{
                 }
             }
             PropertyChanges{ enabled:!textEdit.active}
-            
+
         }
         Rectangle{
             id:content_textEdit
@@ -628,18 +628,18 @@ ApplicationWindow{
                     else if ((contentY+height)/2 <= r.y+r.height)
                         contentY = r.y+r.height-height/2;
                 }
-                
+
                 TextEdit{
-                    
+
                     // onTextChanged:{
                     //     // console.log('jel')
-                        
+
                     //     // console.log(textEdit.positionToRectangle(textEdit.positionAt(textEdit.contentWidth,cursorDelegate_.y)).x)
                     //     // if(textEdit.positionToRectangle(textEdit.positionAt(textEdit.contentWidth,cursorDelegate_.y)).x===0 && textEdit.positionToRectangle(textEdit.positionAt(textEdit.contentWidth,cursorDelegate_.y)).y/32 + 1=== lineCount-3){
                     //     //     console.log('before last')
                     //     // }
                     // }
-                    
+
                     id:textEdit
                     width:flick.width
                     onCursorRectangleChanged: flick.ensureVisible(cursorRectangle)
@@ -689,9 +689,9 @@ ApplicationWindow{
                         ];
                         var punctuation = [".", ",", "!", "?", ";", ":"];
                         var numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
-                        
+
                         var text = "";
-                        
+
                         for (var i = 0; i < numWords; i++) {
                             var word = words[Math.floor(Math.random() * words.length)];
                             if (includeNumbers && Math.random() < 0.2) {
@@ -716,7 +716,9 @@ ApplicationWindow{
                             refreshTextAnimation.start()
                             // console.log((textEdit.rawText)+ "<")
                             // console.log((textEdit.rawText.trim())+ "<")
-                            textEdit.text="<p style='line-height:100%' >" +(timeMode.checked?textEdit.rawText:textEdit.rawText.trim())+"</p>"
+                            //mouad[2025] [done] : here you forgot to reset currentWord , so I reset it
+                            textEdit.currentWord = textEdit.rawText.slice(0,textEdit.rawText.indexOf(" "))
+                            textEdit.text="<p style='line-height:1' >" +(timeMode.checked?textEdit.rawText:textEdit.rawText.trim())+"</p>"
                         }else{
                             var genText=generateText()
                             if(!timeMode.checked){
@@ -724,9 +726,12 @@ ApplicationWindow{
                             }
                             refreshTextAnimation.start()
                             textEdit.rawText=genText
-                            textEdit.text = "<p style='line-height:100%' >" +genText+"</p>"
+                            textEdit.text = "<p style='line-height:1' >" +genText+"</p>"
 
                         }
+                        // mouad[2025] : last time I try to make way to perserve line-height:2 is to add this hidden char :
+                        //<span id='styleAnchor' style='font-size:0pt; line-height:0pt; display:inline-block; width:0pt; height:0pt; visibility:hidden'>\u200B</span>
+                        // and make cursorPosition resets to 1 to skip the hidder char
                         textEdit.cursorPosition=0
                         textEdit.active=false
                         textEdit.currentWordIndex=0
@@ -738,6 +743,10 @@ ApplicationWindow{
                         textEdit.repeated=isrepeated
                         series1.removePoints(0,series1.count)
                         series2.removePoints(0,series2.count)
+
+                        textEdit.writtenCharsExam=""
+                        textEdit.errorTrackSeries=({'0':0})
+                        textEdit.countedErrors=0
                         // console.log('this is cnt : '+paceAnimation.cnt)
                         // console.log('ReSet')
                         // if(textEdit.repeated){
@@ -783,11 +792,11 @@ ApplicationWindow{
                                 // console.log('added')
                                 textEdit.insert(textEdit.length,textEdit.generateText(15))
                             }
-                            
+
                         }
-                        SequentialAnimation on opacity { 
+                        SequentialAnimation on opacity {
                             // alwaysRunToEnd:true
-                            running: !textEdit.active; 
+                            running: !textEdit.active;
                             loops: Animation.Infinite;
                             NumberAnimation { to: 0; duration: 500; easing.type: "OutQuad"}
                             NumberAnimation { to: 1; duration: 500; easing.type: "InQuad"}
@@ -853,6 +862,7 @@ ApplicationWindow{
                         if (event.modifiers & Qt.ControlModifier) {
                             if (event.key === Qt.Key_Backspace) {
                                 if(cursorPosition===currentWordIndex){
+                                    // mouad[2025] : also add if only the last written word has error
                                     event.accepted=true
                                     return
                                 }
@@ -865,9 +875,10 @@ ApplicationWindow{
                                     insert(cursorPosition,"<font color="+root_app.sub_color.toString()+">"+writtenText+"</font>")
                                     cursorPosition=cursorPosition-writtenText.length
                                 }
+                                textEdit.writtenCharsExam = ""
                                 return
                             }
-                            return
+                            // return
                             if (event.matches(StandardKey.Undo)) {
                                 event.accepted = true
                                 return
@@ -883,7 +894,7 @@ ApplicationWindow{
                             }
                             return
                         }
-                        
+
                         if (event.key === Qt.Key_Backspace){
                             if(cursorPosition===currentWordIndex){
                                 event.accepted=true
@@ -895,6 +906,7 @@ ApplicationWindow{
                             }else{
                                 insert(cursorPosition,"<font color="+root_app.sub_color.toString()+">"+currentWord[cursorPosition-currentWordIndex-1]+"</font>")
                                 cursorPosition--
+                                textEdit.writtenCharsExam = textEdit.writtenCharsExam.slice(0, -1)
                             }
                             return
                         }
@@ -909,20 +921,40 @@ ApplicationWindow{
                                 rawWrittenWords++
                                 // console.log('rawwritten: '+rawWrittenWords)
                             }
-                            if(cursorPosition-currentWordIndex===currentWord.length){
+                            console.log("you wrote : ",textEdit.writtenCharsExam)
+                            if(cursorPosition-currentWordIndex===currentWord.length && textEdit.writtenCharsExam === "V".repeat(currentWord.length)){
+                                // moaud[2025][info] : this only checks if written chars == currentWord.length and not if chars are correct
                                 writtenWords++
                                 // console.log('Written: '+writtenWords)
                             }
+                            // mouad[2025][info] : countedErrors will count Each non correct written char (either wrong or extra )
+                            textEdit.countedErrors = textEdit.countedErrors+ (textEdit.writtenCharsExam.match(/E/g)||[]).length
+                            console.log("Error Count : = >",textEdit.countedErrors)
+                            console.log("wrong written words: ",textEdit.rawWrittenWords-textEdit.writtenWords)
+                            // mouad[2025] [done] : let's try to add underline (I didn't like a lot)
+                            // if( (textEdit.writtenCharsExam.match(/E/g)||[]).length !==0){
+
+                            //    // insert and remove
+                            //    var rawFormattedCurrentWord = getFormattedText(currentWordIndex,Math.max(cursorPosition,currentWordIndex + currentWord.length))
+                            //    var formattedCurrentWord = rawFormattedCurrentWord.slice(rawFormattedCurrentWord.indexOf("<!--StartFragment-->") +"<!--StartFragment-->".length,rawFormattedCurrentWord.indexOf("<!--EndFragment-->"))
+                            //    remove(currentWordIndex,Math.max(cursorPosition,currentWordIndex + currentWord.length))
+                            //    insert(currentWordIndex,"<u>"+(formattedCurrentWord)+"</u>")
+
+                            //    console.log("underline this formatted ; --> ",formattedCurrentWord)
+                            //     //-----
+                            // }
                             cursorPosition = cursorPosition+ getText(cursorPosition,textEdit.length).indexOf(" ")+1
                             currentWord=getText(cursorPosition,cursorPosition+getText(cursorPosition,textEdit.length).indexOf(" "))
                             if(currentWord===" "){
                                 currentWord=getText(cursorPosition,textEdit.length)
                             }
                             currentWordIndex=cursorPosition
-
+                            textEdit.writtenCharsExam = ""
                             event.accepted=true
                             return
                         }
+                        // mouad[2025] : from here typed char is processed :
+                        textEdit.writtenCharsExam = textEdit.writtenCharsExam + (event.text === getText(cursorPosition,cursorPosition+1) ? "V" : "E")
                         if (getText(cursorPosition,cursorPosition+1)===" "){
                             // console.log('spce')
                             insert(cursorPosition,"<font color="+root_app.error_extra_color.toString()+">"+event.text+"</font>")
@@ -933,12 +965,20 @@ ApplicationWindow{
                             event.accepted =true
                             return;
                         }
-
                         var charColor=event.text === getText(cursorPosition,cursorPosition+1) ? root_app.text_color.toString():root_app.error_color.toString()
                         insert(cursorPosition,"<font color='"+charColor+"'>"+(getText(cursorPosition,cursorPosition+1))+"</font>")
                         remove(cursorPosition,cursorPosition+1)
                         if(cursorPosition === length){
-                            textEdit.writtenWords++
+                            // mouad[2025] [done]: also check if word is correct
+                            if(cursorPosition-currentWordIndex===currentWord.length && textEdit.writtenCharsExam === "V".repeat(currentWord.length)){
+                               // moaud[2025] [info] : this only checks if written chars == currentWord.length and not if chars are correct
+                               writtenWords++
+                               // console.log('Written: '+writtenWords)
+                            }
+                            // mouad[2025] [info] : countedErrors will count Each non correct written char (either wrong or extra )
+                            textEdit.countedErrors = textEdit.countedErrors+ (textEdit.writtenCharsExam.match(/E/g)||[]).length
+                            textEdit.errorTrackSeries[timer.timeStep-1]=  textEdit.countedErrors
+                            //-----------------
                             textEdit.rawWrittenWords++
                             // console.log('raw is :' +rawWrittenWords)
                             // console.log(textEdit.wordCount)
@@ -955,6 +995,10 @@ ApplicationWindow{
                     property int rawWrittenWords:0
                     property bool repeated:false
                     property string rawText
+
+                    property string writtenCharsExam
+                    property int countedErrors:0
+                    property var errorTrackSeries:({'0':0})
 
                     onActiveChanged:{
                         if(textEdit.repeated===false){
@@ -992,7 +1036,7 @@ ApplicationWindow{
                         onTriggered: {
                             // console.log(timeStep+ "/" + timeMode_limit)
 
-                            
+
                             // for cpm
                             // var speed=Math.round((textEdit.cursorPosition/timeStep)*60)
                             // series1.append(timeStep,speed)
@@ -1012,7 +1056,9 @@ ApplicationWindow{
                             if(rawSpeed> rawMaxSpeed){
                                 rawMaxSpeed=rawSpeed
                             }
-
+                            // console.log("I will add this " ,  textEdit.countedErrors ," to this : ", textEdit.errorTrackSeries[timeStep],"while this : ",timeStep)
+                            textEdit.errorTrackSeries[timeStep]=  textEdit.countedErrors
+                            console.log(textEdit.active," counted Errors in Series :",textEdit.errorTrackSeries[timeStep])
                             timeStep++
                         }
                         onRunningChanged:{
@@ -1065,7 +1111,7 @@ ApplicationWindow{
                 onClicked:{
                     textEdit.resetProperties(false)
                 }
-                
+
                 Text {
                     opacity:parent.state ==="Hovering"?1:0
                     anchors.top:parent.bottom
@@ -1112,7 +1158,7 @@ ApplicationWindow{
                     PropertyChanges{ visible:opacity===1}
                 }
             }
-            
+
 
             Item{
                 Layout.fillWidth:true
@@ -1136,14 +1182,14 @@ ApplicationWindow{
                     paceAnimation.complete()
                 }
                 axisX.min=1
-                
+
             }
 
             onClosed: {
                 // series1.removePoints(0,series1.count)
                 // series2.removePoints(0,series2.count)
             }
-            
+
             enter: Transition {
                 // grow_fade_in
                 NumberAnimation {
@@ -1172,7 +1218,7 @@ ApplicationWindow{
 
             Rectangle {
                 implicitWidth: root_app.width
-                implicitHeight: root_app.height 
+                implicitHeight: root_app.height
                 color: root_app.bg_color
                 ColumnLayout{
                     anchors.fill:parent
@@ -1302,7 +1348,7 @@ ApplicationWindow{
                         rows:3
                         columnSpacing: 0
                         rowSpacing: 0
-                        
+
 
                         ColumnLayout {
                             Layout.fillWidth: true
@@ -1403,7 +1449,7 @@ ApplicationWindow{
                                 color: Qt.rgba(0,0,0,0.8)
                                 radius:4
                                 opacity:0
-                                
+
                                 Text {
                                     id: ticket_text
                                     anchors.top:parent.top
@@ -1500,7 +1546,8 @@ ApplicationWindow{
                                         ticket.opacity=1
 
                                         ticket_text.text=Math.round(point.x)
-                                        ticket_rep.model.get(0).val=series2.at(Math.round(point.x)-1).y -series1.at(Math.round(point.x)-1).y
+                                        console.log(Math.round(point.x) ," --> ",textEdit.errorTrackSeries[Math.round(point.x)] )
+                                        ticket_rep.model.get(0).val=textEdit.errorTrackSeries[Math.round(point.x)] - (textEdit.errorTrackSeries[Math.max(0,Math.round(point.x)-1)])
                                         ticket_rep.model.get(1).val=series1.at(Math.round(point.x)-1).y
                                         ticket_rep.model.get(2).val=series2.at(Math.round(point.x)-1).y
                                     }
@@ -1524,7 +1571,7 @@ ApplicationWindow{
                                 // pointLabelsVisible :true
                                 onHovered:(point,state)=> {
                                 }
-                                
+
                             }
 
                         }
@@ -1742,21 +1789,22 @@ ApplicationWindow{
                                     borderWidth:2
                                     borderColor:focus?root_app.text_color.toString():"transparent"
                                     focus:index===btns_repeater.focus_index
-                                    
-                                    Keys.onTabPressed: {
-                                        btns_repeater.focus_index=(btns_repeater.focus_index + 1)%6
-                                    }
+
+                                    // Keys.onTabPressed: {
+                                    //     btns_repeater.focus_index=(btns_repeater.focus_index + 1)%6
+                                    // }
                                     Keys.onPressed:event=>{
-                                        if (event.key !== 16777220){
-                                            return
-                                        }
-                                        if(index===1){
-                                            textEdit.resetProperties(true)
-                                            finished_test.close()
-                                        }
-                                        if(index===0){
-                                            textEdit.resetProperties(false)
-                                            finished_test.close()
+                                        if (event.key ===  16777220){
+                                           if(index===1){
+                                               textEdit.resetProperties(true)
+                                               finished_test.close()
+                                           }
+                                           if(index===0){
+                                               textEdit.resetProperties(false)
+                                               finished_test.close()
+                                           }
+                                        }else if (event.key === Qt.Key_Space ){
+                                            event.accepted = true
                                         }
                                     }
                                     onClicked:{
@@ -1770,7 +1818,7 @@ ApplicationWindow{
                                             finished_test.close()
                                         }
                                     }
-                                    
+
                                     Text {
                                         opacity:parent.state ==="Hovering"?1:0
                                         anchors.top:parent.bottom
@@ -1824,7 +1872,7 @@ ApplicationWindow{
                                 Layout.fillWidth:true
                             }
                         }
-                        
+
                     }
 
                     Item{
@@ -1875,13 +1923,13 @@ ApplicationWindow{
                 // closePolicy: Popup.NoAutoClose
                 padding: 0
                 onOpened: {
-                    
+
                 }
 
                 onClosed: {
-                    
+
                 }
-                
+
                 enter: Transition {
                     // grow_fade_in
                     NumberAnimation {
@@ -2071,7 +2119,7 @@ ApplicationWindow{
                                 MouseArea {
                                     anchors.fill: parent
                                     cursorShape: Qt.PointingHandCursor
-                                    hoverEnabled: palletItem.enabled 
+                                    hoverEnabled: palletItem.enabled
                                     acceptedButtons: Qt.LeftButton
                                     onClicked: {
                                         palletListView.chosenPallet=index
@@ -2097,7 +2145,7 @@ ApplicationWindow{
                             Layout.margins:5
                             clip:true
                             property int chosenPallet:2
-                            
+
                             T.ScrollIndicator.vertical: ScrollIndicator { }
                             model: palletsortFilterModel
                         }

@@ -1,9 +1,9 @@
 import QtQuick
 import QtQuick.Controls.Basic
 import QtQuick.Layouts
-import Qt5Compat.GraphicalEffects
-
-TextField {
+// import Qt5Compat.GraphicalEffects
+import QtQuick.Templates as T
+T.TextField {
     id: textField
 
     // Custom Properties

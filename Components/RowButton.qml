@@ -28,7 +28,7 @@ AbstractButton {
     property bool enabledEffect:button.buttonText!==''
     property color disabledBgColor: "transparent"
     property color disabledImageColor: "transparent"
-    property var scaleTo: 0.96
+    property real scaleTo: 0.96
     scale: state === "Pressed" ? scaleTo : 1.0
     onEnabledChanged: state = ""
 
@@ -116,7 +116,7 @@ AbstractButton {
             }
         }
     ]
-    signal clicked
+    // signal clicked
     signal hoveredIn
     signal entered
     signal exited

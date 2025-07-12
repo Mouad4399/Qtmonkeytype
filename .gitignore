@@ -1,0 +1,36 @@
+# Build directories
+/build/
+/dist/
+/out/
+/bin/
+*.exe
+*.a
+*.so
+*.dll
+
+# Python cache and virtualenv
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+.pytest_cache/
+venv/
+env/
+.venv/
+ENV/
+
+# VSCode settings
+.vscode/
+!.vscode/settings.json  # Optional: Keep specific settings
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# VSCode extensions (if needed)
+.vscode/extensions/
+
+# IDE-specific (optional)
+.idea/
+*.swp
+*.swo
+*.log
