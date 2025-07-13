@@ -896,6 +896,8 @@ ApplicationWindow{
                         }
 
                         if (event.key === Qt.Key_Backspace){
+                            // remove last char in writtenCharsExam because you deleted your last input char
+                            textEdit.writtenCharsExam = textEdit.writtenCharsExam.slice(0, -1)
                             if(cursorPosition===currentWordIndex){
                                 event.accepted=true
                                 return
@@ -906,7 +908,6 @@ ApplicationWindow{
                             }else{
                                 insert(cursorPosition,"<font color="+root_app.sub_color.toString()+">"+currentWord[cursorPosition-currentWordIndex-1]+"</font>")
                                 cursorPosition--
-                                textEdit.writtenCharsExam = textEdit.writtenCharsExam.slice(0, -1)
                             }
                             return
                         }
@@ -921,11 +922,12 @@ ApplicationWindow{
                                 rawWrittenWords++
                                 // console.log('rawwritten: '+rawWrittenWords)
                             }
+                            // here we add the missing chars as Errors , because max( written chars, currentWord.length) == writtenCharsExam.length always accept that case
+                            textEdit.writtenCharsExam =  textEdit.writtenCharsExam + "E".repeat(Math.max((cursorPosition-currentWordIndex) , currentWord.length)  - textEdit.writtenCharsExam.length)
                             console.log("you wrote : ",textEdit.writtenCharsExam)
-                            if(cursorPosition-currentWordIndex===currentWord.length && textEdit.writtenCharsExam === "V".repeat(currentWord.length)){
+                            if( textEdit.writtenCharsExam === "V".repeat(currentWord.length)){
                                 // moaud[2025][info] : this only checks if written chars == currentWord.length and not if chars are correct
                                 writtenWords++
-                                // console.log('Written: '+writtenWords)
                             }
                             // mouad[2025][info] : countedErrors will count Each non correct written char (either wrong or extra )
                             textEdit.countedErrors = textEdit.countedErrors+ (textEdit.writtenCharsExam.match(/E/g)||[]).length
