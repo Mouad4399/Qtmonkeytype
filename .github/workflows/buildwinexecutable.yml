@@ -1,61 +1,37 @@
-name: Build and Package Standalone Qt Quick App (Windows EXE)
-
-on:
-  release:
-    types: [created]
-
 jobs:
   build-windows:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    container:
-      image: stateoftheartio/qt6:6.7-mingw-aqt
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Install dependencies
-      run: |
-        apt-get update && apt-get install -y \
-          zip \
-          wget
+      - name: Pull QtMinGW image
+        run: docker pull mwaeckerlin/mingw
 
-    - name: Configure and Build
-      run: |
-        mkdir -p build && cd build
-        cmake .. \
-          -G "Ninja" \
-          -DCMAKE_TOOLCHAIN_FILE=/usr/share/mxe/toolchain-x86_64.cmake \
-          -DCMAKE_PREFIX_PATH=/opt/qt6/mingw_64 \
-          -DCMAKE_BUILD_TYPE=Release \
-          -DBUILD_SHARED_LIBS=OFF \
-          -DQT_QMAKE_TARGET_MKSPEC=win32-g++ \
-          -DCMAKE_INSTALL_PREFIX=../install
-        
-        cmake --build . --parallel $(nproc)
-        cmake --install .
+      - name: Build static Qt6
+        run: |
+          docker run --rm -v $PWD:/src mwaeckerlin/mingw \
+            /build-qt.sh --qt-version 6.7.2 --static --release --prefix /src/qt-static
 
-    - name: Deploy Qt dependencies
-      run: |
-        cd build
-        /opt/qt6/mingw_64/bin/windeployqt \
-          --no-translations \
-          --no-system-d3d-compiler \
-          --no-opengl-sw \
-          --no-angle \
-          --no-compiler-runtime \
-          ../install/bin/MyApp.exe
+      - name: Build your app
+        run: |
+          docker run --rm -v $PWD:/src mwaeckerlin/mingw bash -lc "\
+            mkdir -p build && cd build && \
+            cmake ../src -G 'Unix Makefiles' \
+              -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw/toolchain-x86_64.cmake \
+              -DCMAKE_PREFIX_PATH=/src/qt-static && \
+            make -j$(nproc) \
+          "
 
-    - name: Create standalone package
-      run: |
-        mkdir -p dist
-        cd install/bin
-        zip -r ../../dist/MyApp-windows-standalone.zip ./*
-
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: MyApp-windows-standalone
-        path: dist/MyApp-windows-standalone.zip
+      # - name: Package exe
+      #   run: 7z a MyApp-windows.zip build/MyApp.exe
+      # - uses: actions/upload-artifact@v3
+      #   with:
+      #     name: windows-exe
+      #     path: MyApp-windows.zip
+      
+      - name: Upload AppImage
+        uses: softprops/action-gh-release@v1
+        with:
+          files: 'build/*.exe'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
