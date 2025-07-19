@@ -8,7 +8,7 @@ jobs:
   build-windows:
     runs-on: ubuntu-latest
     container:
-      image: state-of-the-art/qt6-docker:6.7-mingw-aqt
+      image: stateoftheartio/qt6:6.7-mingw-aqt
 
     steps:
     - name: Checkout repository
