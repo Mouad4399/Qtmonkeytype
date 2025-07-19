@@ -2,11 +2,13 @@ name: Build and Package Standalone Qt Quick App (Windows EXE)
 
 on:
   release:
-    types: [published]
+    types: [created]
 
 jobs:
   build-windows:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     container:
       image: stateoftheartio/qt6:6.7-mingw-aqt
 
