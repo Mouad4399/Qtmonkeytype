@@ -1,0 +1,51 @@
+name: Build and Package Standalone Qt Quick App (Windows EXE)
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-windows:
+    runs-on: ubuntu-latest
+    container:
+      image: state-of-the-art/qt6-docker:6.7-mingw-aqt
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Prepare build directory
+      run: |
+        mkdir build && cd build
+
+    - name: Configure CMake (cross-compile using prebuilt Qt6)
+      run: |
+        cd build
+        cmake .. \
+          -G "Unix Makefiles" \
+          -DCMAKE_TOOLCHAIN_FILE=/usr/share/mxe/toolchain-x86_64.cmake \
+          -DCMAKE_PREFIX_PATH=/opt/qt6/mingw_64 \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DBUILD_SHARED_LIBS=OFF \
+          -DCMAKE_INSTALL_PREFIX=$PWD/install
+
+    - name: Build application
+      run: |
+        cd build
+        make -j$(nproc)
+
+    - name: Install into deploy folder
+      run: |
+        cd build
+        make install
+
+    - name: Package standalone .exe
+      run: |
+        cd build/install/bin
+        zip -j MyApp-windows-static.zip MyApp.exe
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: MyApp-windows-static
+        path: build/install/bin/MyApp-windows-static.zip
