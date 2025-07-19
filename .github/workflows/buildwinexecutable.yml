@@ -12,40 +12,48 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
-    - name: Prepare build directory
+    - name: Install dependencies
       run: |
-        mkdir build && cd build
+        apt-get update && apt-get install -y \
+          zip \
+          wget
 
-    - name: Configure CMake (cross-compile using prebuilt Qt6)
+    - name: Configure and Build
       run: |
-        cd build
+        mkdir -p build && cd build
         cmake .. \
-          -G "Unix Makefiles" \
+          -G "Ninja" \
           -DCMAKE_TOOLCHAIN_FILE=/usr/share/mxe/toolchain-x86_64.cmake \
           -DCMAKE_PREFIX_PATH=/opt/qt6/mingw_64 \
           -DCMAKE_BUILD_TYPE=Release \
           -DBUILD_SHARED_LIBS=OFF \
-          -DCMAKE_INSTALL_PREFIX=$PWD/install
+          -DQT_QMAKE_TARGET_MKSPEC=win32-g++ \
+          -DCMAKE_INSTALL_PREFIX=../install
+        
+        cmake --build . --parallel $(nproc)
+        cmake --install .
 
-    - name: Build application
+    - name: Deploy Qt dependencies
       run: |
         cd build
-        make -j$(nproc)
+        /opt/qt6/mingw_64/bin/windeployqt \
+          --no-translations \
+          --no-system-d3d-compiler \
+          --no-opengl-sw \
+          --no-angle \
+          --no-compiler-runtime \
+          ../install/bin/MyApp.exe
 
-    - name: Install into deploy folder
+    - name: Create standalone package
       run: |
-        cd build
-        make install
-
-    - name: Package standalone .exe
-      run: |
-        cd build/install/bin
-        zip -j MyApp-windows-static.zip MyApp.exe
+        mkdir -p dist
+        cd install/bin
+        zip -r ../../dist/MyApp-windows-standalone.zip ./*
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: MyApp-windows-static
-        path: build/install/bin/MyApp-windows-static.zip
+        name: MyApp-windows-standalone
+        path: dist/MyApp-windows-standalone.zip
