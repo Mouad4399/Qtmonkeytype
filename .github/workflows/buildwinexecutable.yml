@@ -1,4 +1,3 @@
-
 name: Build EXE
 
 on:
@@ -24,26 +23,18 @@ jobs:
 
     - name: Build your app
       run: |
-        docker run -dit \
+        docker run --rm \
           --privileged \
           -v "${{ github.workspace }}":/src \
           -w /src \
-          --name exe-builder-container \
-          mwaeckerlin/mingw \
-          /build-qt.sh --qt-version 6.7.2 --static --release --prefix /src/qt-static \
-          bash
-
-        # Run the commands inside the container
-        
-        
-        docker exec exe-builder-container bash -c
-        "\
-          mkdir -p build && cd build && \
-          cmake ../src -G 'Unix Makefiles' \
-            -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw/toolchain-x86_64.cmake \
-            -DCMAKE_PREFIX_PATH=/src/qt-static && \
-          make -j$(nproc) \
-        "
+          mwaeckerlin/mingw bash -c "\
+            /build-qt.sh --qt-version 6.7.2 --static --release --prefix /src/qt-static && \
+            mkdir -p build && cd build && \
+            cmake ../src -G 'Unix Makefiles' \
+              -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw/toolchain-x86_64.cmake \
+              -DCMAKE_PREFIX_PATH=/src/qt-static && \
+            make -j\$(nproc)
+          "
 
     # - name: Package exe
     #   run: 7z a MyApp-windows.zip build/MyApp.exe
