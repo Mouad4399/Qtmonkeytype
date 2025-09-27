@@ -1,37 +1,47 @@
+
+name: Build EXE
+
+on:
+  release:
+    types: [created]
+  workflow_dispatch:
+
 jobs:
   build-windows:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
+    - name: Pull QtMinGW image
+      run: docker pull mwaeckerlin/mingw
 
-      - name: Pull QtMinGW image
-        run: docker pull mwaeckerlin/mingw
+    - name: Build static Qt6
+      run: |
+        docker run --rm -v $PWD:/src mwaeckerlin/mingw \
+          /build-qt.sh --qt-version 6.7.2 --static --release --prefix /src/qt-static
 
-      - name: Build static Qt6
-        run: |
-          docker run --rm -v $PWD:/src mwaeckerlin/mingw \
-            /build-qt.sh --qt-version 6.7.2 --static --release --prefix /src/qt-static
+    - name: Build your app
+      run: |
+        docker run --rm -v $PWD:/src mwaeckerlin/mingw bash -lc "\
+          mkdir -p build && cd build && \
+          cmake ../src -G 'Unix Makefiles' \
+            -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw/toolchain-x86_64.cmake \
+            -DCMAKE_PREFIX_PATH=/src/qt-static && \
+          make -j$(nproc) \
+        "
 
-      - name: Build your app
-        run: |
-          docker run --rm -v $PWD:/src mwaeckerlin/mingw bash -lc "\
-            mkdir -p build && cd build && \
-            cmake ../src -G 'Unix Makefiles' \
-              -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw/toolchain-x86_64.cmake \
-              -DCMAKE_PREFIX_PATH=/src/qt-static && \
-            make -j$(nproc) \
-          "
-
-      # - name: Package exe
-      #   run: 7z a MyApp-windows.zip build/MyApp.exe
-      # - uses: actions/upload-artifact@v3
-      #   with:
-      #     name: windows-exe
-      #     path: MyApp-windows.zip
-      
-      - name: Upload AppImage
-        uses: softprops/action-gh-release@v1
-        with:
-          files: 'build/*.exe'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    # - name: Package exe
+    #   run: 7z a MyApp-windows.zip build/MyApp.exe
+    # - uses: actions/upload-artifact@v3
+    #   with:
+    #     name: windows-exe
+    #     path: MyApp-windows.zip
+    
+    - name: Upload EXE
+      uses: softprops/action-gh-release@v1
+      with:
+        files: 'build/*.exe'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
