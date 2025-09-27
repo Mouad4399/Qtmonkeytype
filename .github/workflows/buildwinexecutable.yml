@@ -25,7 +25,7 @@ jobs:
           mwaeckerlin/mingw bash -c "\
             set -ex
             mkdir -p build && cd build && \
-            cmake ../src -G 'Unix Makefiles' \
+            cmake .. -G 'Unix Makefiles' \
               -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw/toolchain-x86_64.cmake \
               -DCMAKE_PREFIX_PATH=/src/qt-static && \
             make -j$(nproc) \
