@@ -1,4 +1,4 @@
-name: Build EXE
+name: Build Qt App EXE
 
 on:
   release:
@@ -7,73 +7,44 @@ on:
 
 jobs:
   build-windows:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     permissions:
       contents: write
 
     steps:
     - uses: actions/checkout@v4
-    - name: Pull QtMinGW image
-      run: docker pull mwaeckerlin/mingw
 
-
-    - name: Build your Qt statically
-      run: |
-        docker run --rm \
-          --privileged \
-          -v "${{ github.workspace }}":/src \
-          -w /src \
-          mwaeckerlin/mingw bash -c " \
-            set -ex && \
-            /build-qt.sh --qt-version 6.7.2 --static --release --prefix /src/qt-static && \
-            mkdir -p build && \
-            cd build && \
-            cmake .. -G 'Unix Makefiles' \
-              -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw/toolchain-x86_64.cmake \
-              -DCMAKE_PREFIX_PATH=/src/qt-static && \
-            make -j\$(nproc) \
-          "e:
-
-    - name: Build your app
-      run: |
-        docker run --rm \
-          --privileged \
-          -v "${{ github.workspace }}":/src \
-          -w /src \
-          mwaeckerlin/mingw bash -c "\
-            set -ex
-            mkdir -p build && cd build && \
-            cmake ../src -G 'Unix Makefiles' \
-              -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw/toolchain-x86_64.cmake \
-              -DCMAKE_PREFIX_PATH=/src/qt-static && \
-            make -j$(nproc) \
-          "
-
-  
-
-    - name: List Dir
-      run: |
-        ls ./
-
-    - name: List Dir
-      run: |
-        ls /src
-
-
-    - name: List Artifacts
-      run: |
-        ls ./build
-
-    # - name: Package exe
-    #   run: 7z a MyApp-windows.zip build/MyApp.exe
-    # - uses: actions/upload-artifact@v3
-    #   with:
-    #     name: windows-exe
-    #     path: MyApp-windows.zip
-    
-    - name: Upload EXE
-      uses: softprops/action-gh-release@v1
+    - name: Set up Qt
+      uses: jurplel/install-qt-action@v3
       with:
-        files: 'build/*.exe'
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        version: '6.7.2'
+        host: 'windows'
+        target: 'desktop'
+        arch: 'win64_mingw'
+        modules: 'qtcharts'
+        tools: 'tools_mingw,qt.tools.win64_mingw1120'
+
+    - name: Add Qt bin to PATH
+      run: echo "$Env:Qt6_DIR/bin" | Out-File -FilePath $env:GITHUB_PATH -Append
+
+    - name: Configure CMake
+      run: |
+        mkdir build
+        cd build
+        cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$Env:Qt6_DIR" -DCMAKE_C_COMPILER="$Env:Qt_MINGW_DIR/bin/gcc.exe" -DCMAKE_CXX_COMPILER="$Env:Qt_MINGW_DIR/bin/g++.exe"
+
+    - name: Build
+      run: |
+        cd build
+        mingw32-make
+
+    - name: Deploy with windeployqt
+      run: |
+        cd build
+        "$Env:Qt6_DIR/bin/windeployqt.exe" . --release
+
+    - name: Upload EXE
+      uses: actions/upload-artifact@v3
+      with:
+        name: windows-exe
+        path: build/*.exe
