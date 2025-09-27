@@ -31,18 +31,15 @@ jobs:
             make -j$(nproc) \
           "
 
-    
+  
+
     - name: List Dir
       run: |
-        dir ./
-
-    - name: List Dir 2
-      run: |
-        ls ./
+        ls /src
 
     - name: List Artifacts
       run: |
-        dir ./build
+        ls /src/build
 
     # - name: Package exe
     #   run: 7z a MyApp-windows.zip build/MyApp.exe
