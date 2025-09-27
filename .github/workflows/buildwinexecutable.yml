@@ -16,6 +16,24 @@ jobs:
     - name: Pull QtMinGW image
       run: docker pull mwaeckerlin/mingw
 
+
+    - name: Build your Qt statically
+      run: |
+        docker run --rm \
+          --privileged \
+          -v "${{ github.workspace }}":/src \
+          -w /src \
+          mwaeckerlin/mingw bash -c " \
+            set -ex && \
+            /build-qt.sh --qt-version 6.7.2 --static --release --prefix /src/qt-static && \
+            mkdir -p build && \
+            cd build && \
+            cmake .. -G 'Unix Makefiles' \
+              -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw/toolchain-x86_64.cmake \
+              -DCMAKE_PREFIX_PATH=/src/qt-static && \
+            make -j\$(nproc) \
+          "e:
+
     - name: Build your app
       run: |
         docker run --rm \
@@ -25,7 +43,7 @@ jobs:
           mwaeckerlin/mingw bash -c "\
             set -ex
             mkdir -p build && cd build && \
-            cmake .. -G 'Unix Makefiles' \
+            cmake ../src -G 'Unix Makefiles' \
               -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw/toolchain-x86_64.cmake \
               -DCMAKE_PREFIX_PATH=/src/qt-static && \
             make -j$(nproc) \
