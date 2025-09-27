@@ -17,12 +17,12 @@ jobs:
     - name: Set up Qt
       uses: jurplel/install-qt-action@v4
       with:
-        version: '6.7.2'
+        version: '6.5.3'
         host: 'windows'
         target: 'desktop'
         arch: 'win64_mingw'
         modules: 'qtcharts'
-        tools: 'tools_mingw,qt.tools.win64_mingw1120'
+        tools: 'tools_mingw,qt.tools.win64_mingw810'
 
     - name: Add Qt bin to PATH
       run: echo "$Env:Qt6_DIR/bin" | Out-File -FilePath $env:GITHUB_PATH -Append
