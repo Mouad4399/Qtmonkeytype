@@ -35,11 +35,12 @@ jobs:
 
     - name: List Dir
       run: |
-        ls /src
+        ls ./
+
 
     - name: List Artifacts
       run: |
-        ls /src/build
+        ls ./build
 
     # - name: Package exe
     #   run: 7z a MyApp-windows.zip build/MyApp.exe
