@@ -17,14 +17,27 @@ jobs:
     - name: Pull QtMinGW image
       run: docker pull mwaeckerlin/mingw
 
-    - name: Build static Qt6
-      run: |
-        docker run --rm -v $PWD:/src mwaeckerlin/mingw \
-          /build-qt.sh --qt-version 6.7.2 --static --release --prefix /src/qt-static
+    # - name: Build static Qt6
+    #   run: |
+    #     docker run --rm -v $PWD:/src mwaeckerlin/mingw \
+    #       /build-qt.sh --qt-version 6.7.2 --static --release --prefix /src/qt-static
 
     - name: Build your app
       run: |
-        docker run --rm -v $PWD:/src mwaeckerlin/mingw bash -lc "\
+        docker run -dit \
+          --privileged \
+          -v "${{ github.workspace }}":/src \
+          -w /src \
+          --name exe-builder-container \
+          mwaeckerlin/mingw \
+          /build-qt.sh --qt-version 6.7.2 --static --release --prefix /src/qt-static \
+          bash
+
+        # Run the commands inside the container
+        
+        
+        docker exec exe-builder-container bash -c
+        "\
           mkdir -p build && cd build && \
           cmake ../src -G 'Unix Makefiles' \
             -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw/toolchain-x86_64.cmake \
