@@ -28,6 +28,7 @@ jobs:
           -v "${{ github.workspace }}":/src \
           -w /src \
           mwaeckerlin/mingw bash -c "\
+            set -ex
             mkdir -p build && cd build && \
             cmake ../src -G 'Unix Makefiles' \
               -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw/toolchain-x86_64.cmake \
