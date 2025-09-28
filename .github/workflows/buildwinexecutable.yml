@@ -46,6 +46,8 @@ jobs:
         mkdir -p ./build
         cmake -S . -B . && cmake --build . --target all
         
+    - name: Make appQtmonkeytype-cpp executable
+      run: chmod -R 755 ./appQtmonkeytype-cpp.exe
 
     - name: Check for windeployqt6.exe
       run: |
@@ -64,10 +66,10 @@ jobs:
 
     - name: Deploy with windeployqt
       run: |
-        "${{ env.Qt6_Dir }}\bin\windeployqt6.exe"  appQtmonkeytype-cpp.exe --release
+        "${{ env.Qt6_Dir }}\bin\windeployqt6.exe"  appQtmonkeytype-cpp.exe --release --plugindir build\platforms
 
     - name: Upload EXE
       uses: actions/upload-artifact@v4
       with:
         name: windows-exe
-        path: build/*.exe
+        path: appQtmonkeytype-cpp.exe
