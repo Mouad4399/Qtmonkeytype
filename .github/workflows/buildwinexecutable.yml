@@ -30,12 +30,12 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake .. -G "Visual Studio 16 2019" -A x64 -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$Env:QT_ROOT_DIR"
+        cmake -S . -B . && cmake --build . --target all
 
-    - name: Build
-      run: |
-        cd build
-        cmake --build . --config Release
+    # - name: Build
+    #   run: |
+    #     cd build
+    #     cmake --build . --config Release
 
     - name: Deploy with windeployqt
       run: |
