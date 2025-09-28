@@ -32,7 +32,7 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$Env:QT_ROOT_DIR" -DCMAKE_C_COMPILER="$Env:IQTA_TOOLS/mingw810_64/bin/gcc.exe" -DCMAKE_CXX_COMPILER="$Env:IQTA_TOOLS/mingw810_64/bin/g++.exe"
+        cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$Env:QT_ROOT_DIR"  -DCMAKE_MAKE_PROGRAM=mingw32-make -DCMAKE_C_COMPILER="$Env:IQTA_TOOLS/mingw810_64/bin/gcc.exe" -DCMAKE_CXX_COMPILER="$Env:IQTA_TOOLS/mingw810_64/bin/g++.exe"
 
     - name: Build
       run: |
