@@ -29,7 +29,6 @@ jobs:
     - name: Configure CMake
       run: |
         mkdir build
-        cd build
         cmake -S . -B . && cmake --build . --target all
 
     # - name: Build
