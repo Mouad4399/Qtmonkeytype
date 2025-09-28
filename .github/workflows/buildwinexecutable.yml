@@ -50,7 +50,7 @@ jobs:
     - name: Deploy with windeployqt
       run: |
         cd build
-        ${{ env.Qt6_Dir }}/bin/windeployqt6.exe . --release
+        "${{ env.Qt6_Dir }}\bin\windeployqt6.exe" . --release
 
     - name: Upload EXE
       uses: actions/upload-artifact@v4
