@@ -12,7 +12,7 @@ jobs:
     defaults:
         run:
             shell: msys2 {0}
-            
+
     steps:
     - uses: msys2/setup-msys2@v2
       with:
@@ -26,54 +26,37 @@ jobs:
           toolchain:p
           cmake:p
           ninja:p
-    
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v3
+
+    - name: Set up Qt
+      uses: jurplel/install-qt-action@v4
       with:
-        version: 6.5.3
-        modules: 'qtcharts'
+        version: '6.5.3'
         host: 'windows'
         target: 'desktop'
         arch: 'win64_mingw'
+        modules: 'qtcharts'
         tools: 'tools_mingw,qt.tools.win64_mingw810'
-        install-deps: 'true'
-       
-    - uses: actions/checkout@v4
-    - name: cmake
-      env:
-        CMAKE_PREFIX_PATH: ${{env.Qt6_Dir}}
-      run: | 
-        mkdir -p ./build
-        cmake -S . -B . && cmake --build . --target all
-        
-    - name: Make appQtmonkeytype-cpp executable
-      run: chmod -R 755 ./appQtmonkeytype-cpp.exe
 
-    - name: Verify directory for EXE
-      run: |
-        echo "Listing directory contents:"
-        dir .
+    - name: Add Qt bin to PATH
+      run: echo "$Env:Qt6_DIR/bin" | Out-File -FilePath $env:GITHUB_PATH -Append
 
-    - name: Verify build directory for EXE
+
+    - name: Configure CMake
       run: |
-        echo "Listing build directory contents:"
-        dir Qtmonkeytype-cpp
+        mkdir build
+        cd build
+        cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$Env:QT_ROOT_DIR"  -DCMAKE_MAKE_PROGRAM=mingw32-make -DCMAKE_C_COMPILER="$Env:IQTA_TOOLS/mingw810_64/bin/gcc.exe" -DCMAKE_CXX_COMPILER="$Env:IQTA_TOOLS/mingw810_64/bin/g++.exe"
+
+    - name: Build
+      run: |
+        cd build
+        mingw32-make
 
     - name: Deploy with windeployqt
       run: |
-        mkdir -p ./lib
-        mkdir -p ./plugins
-        "${{ env.Qt6_Dir }}\bin\windeployqt6.exe"  ./appQtmonkeytype-cpp.exe  --libdir ./lib --plugindir ./plugins
+        cd build
+        D:\a\Qtmonkeytype\Qt\6.5.3\mingw_64\bin\windeployqt6.exe ./
 
-    - name: Copy MinGW runtime DLLs
-      run: |
-        echo "Copying MinGW runtime DLLs to app directory..."
-        cp /mingw64/bin/libstdc++-6.dll . || cp /c/msys64/mingw64/bin/libstdc++-6.dll .
-        cp /mingw64/bin/libgcc_s_seh-1.dll . || cp /c/msys64/mingw64/bin/libgcc_s_seh-1.dll .
-        cp /mingw64/bin/libwinpthread-1.dll . || cp /c/msys64/mingw64/bin/libwinpthread-1.dll .
-        echo "DLLs in app directory:"
-        ls -l *.dll
-        
     - name: Upload EXE
       uses: actions/upload-artifact@v4
       with:
