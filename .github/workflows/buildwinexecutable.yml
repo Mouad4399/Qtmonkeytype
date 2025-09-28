@@ -60,11 +60,10 @@ jobs:
     - name: Verify build directory for EXE
       run: |
         echo "Listing build directory contents:"
-        dir build
+        dir Qtmonkeytype-cpp
 
     - name: Deploy with windeployqt
       run: |
-        cd build
         "${{ env.Qt6_Dir }}\bin\windeployqt6.exe"  appQtmonkeytype-cpp.exe --release
 
     - name: Upload EXE
