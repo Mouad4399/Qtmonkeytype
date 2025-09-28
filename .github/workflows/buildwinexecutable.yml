@@ -63,13 +63,10 @@ jobs:
       run: |
         mkdir -p ./lib
         mkdir -p ./plugins
-        "${{ env.Qt6_Dir }}\bin\windeployqt6.exe"  ./appQtmonkeytype-cpp.exe  --libdir ./lib --plugindir ./plugins --no-system-d3d-compiler --no-quick-import
-        cp ./appQtmonkeytype-cpp.exe ./build/
-        cp -r ./lib/*.dll ./build/
-        cp -r ./plugins ./build/
+        "${{ env.Qt6_Dir }}\bin\windeployqt6.exe"  ./appQtmonkeytype-cpp.exe  --libdir ./lib --plugindir ./plugins
         
     - name: Upload EXE
       uses: actions/upload-artifact@v4
       with:
         name: windows-exe
-        path: ./build
+        path: ./
