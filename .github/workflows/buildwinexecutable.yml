@@ -20,32 +20,30 @@ jobs:
         version: '6.5.3'
         host: 'windows'
         target: 'desktop'
-        arch: 'win64_mingw'
+        arch: 'win64_msvc2019_64'  # Use MSVC 2019
         modules: 'qtcharts'
-        tools: 'tools_mingw,qt.tools.win64_mingw810'
 
     - name: Add Qt bin to PATH
       run: echo "$Env:Qt6_DIR/bin" | Out-File -FilePath $env:GITHUB_PATH -Append
-
 
     - name: Configure CMake
       run: |
         mkdir build
         cd build
-        cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$Env:QT_ROOT_DIR"  -DCMAKE_MAKE_PROGRAM=mingw32-make -DCMAKE_C_COMPILER="$Env:IQTA_TOOLS/mingw810_64/bin/gcc.exe" -DCMAKE_CXX_COMPILER="$Env:IQTA_TOOLS/mingw810_64/bin/g++.exe"
+        cmake .. -G "Visual Studio 16 2019" -A x64 -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$Env:QT_ROOT_DIR"
 
     - name: Build
       run: |
         cd build
-        mingw32-make
+        cmake --build . --config Release
 
     - name: Deploy with windeployqt
       run: |
-        cd build
-        D:\a\Qtmonkeytype\Qt\6.5.3\mingw_64\bin\windeployqt6.exe ./
+        cd build/Release
+        windeployqt6.exe ./
 
     - name: Upload EXE
       uses: actions/upload-artifact@v4
       with:
         name: windows-exe
-        path: build/*.exe
+        path: build/Release/*.exe
