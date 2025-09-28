@@ -28,9 +28,6 @@ jobs:
       run: echo "$Env:Qt6_DIR/bin" | Out-File -FilePath $env:GITHUB_PATH -Append
 
 
-    - name: Test mingw PATH
-      run: ls "$Env:IQTA_TOOLS/mingw810_64/bin/"
-
     - name: Configure CMake
       run: |
         mkdir build
