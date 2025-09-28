@@ -64,9 +64,9 @@ jobs:
         echo "Listing build directory contents:"
         dir Qtmonkeytype-cpp
 
-    - name: Deploy with windeployqt
-      run: |
-        "${{ env.Qt6_Dir }}\bin\windeployqt6.exe"  appQtmonkeytype-cpp.exe --release --plugindir build\platforms
+    # - name: Deploy with windeployqt
+    #   run: |
+    #     "${{ env.Qt6_Dir }}\bin\windeployqt6.exe"  appQtmonkeytype-cpp.exe 
 
     - name: Upload EXE
       uses: actions/upload-artifact@v4
