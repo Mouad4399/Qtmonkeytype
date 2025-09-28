@@ -50,10 +50,10 @@ jobs:
     - name: Deploy with windeployqt
       run: |
         cd build
-        "$Env:Qt6_DIR\bin\windeployqt6.exe" . --release
+        ../Qt/6.5.3/mingw_64/bin/windeployqt6.exe . --release
 
     - name: Upload EXE
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifacttes@v4
       with:
         name: windows-exe
         path: build/*.exe
