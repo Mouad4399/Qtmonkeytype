@@ -53,7 +53,7 @@ jobs:
         ../Qt/6.5.3/mingw_64/bin/windeployqt6.exe . --release
 
     - name: Upload EXE
-      uses: actions/upload-artifacttes@v4
+      uses: actions/upload-artifact@v4
       with:
         name: windows-exe
         path: build/*.exe
