@@ -37,10 +37,6 @@ jobs:
         modules: 'qtcharts'
         tools: 'tools_mingw,qt.tools.win64_mingw810'
 
-    - name: Add Qt bin to PATH
-      run: echo "$Env:Qt6_DIR/bin" | Out-File -FilePath $env:GITHUB_PATH -Append
-
-
     - name: Configure CMake
       run: |
         mkdir build
