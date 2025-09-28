@@ -37,6 +37,9 @@ jobs:
         modules: 'qtcharts'
         tools: 'tools_mingw,qt.tools.win64_mingw810'
 
+    - name: check dir
+      run: dir .
+
     - name: Configure CMake
       run: |
         mkdir build
