@@ -44,17 +44,29 @@ jobs:
         CMAKE_PREFIX_PATH: ${{env.Qt6_Dir}}
       run: | 
         mkdir -p ./build
-        cmake -S . -B . && cd build && cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release 
+        cmake -S . -B . && cmake --build . --target all
+        
+    - name: Make appQtmonkeytype-cpp executable
+      run: chmod -R 755 ./appQtmonkeytype-cpp.exe
+
+    - name: Verify directory for EXE
+      run: |
+        echo "Listing directory contents:"
+        dir .
 
     - name: Verify build directory for EXE
       run: |
-        echo "Listing directory contents:"
-        dir build
-    
+        echo "Listing build directory contents:"
+        dir Qtmonkeytype-cpp
 
-    # - name: Deploy with windeployqt
-    #   run: |
-    #     cd build && "${{ env.Qt6_Dir }}\bin\windeployqt6.exe"  ./appQtmonkeytype-cpp.exe 
+    - name: Deploy with windeployqt
+      run: |
+        mkdir -p ./lib
+        mkdir -p ./plugins
+        "${{ env.Qt6_Dir }}\bin\windeployqt6.exe"  ./appQtmonkeytype-cpp.exe  --libdir ./lib --plugindir ./plugins --no-system-d3d-compiler --no-quick-import
+        cp ./appQtmonkeytype-cpp.exe ./build/
+        cp -r ./lib/*.dll ./build/
+        cp -r ./plugins ./build/
         
     - name: Upload EXE
       uses: actions/upload-artifact@v4
