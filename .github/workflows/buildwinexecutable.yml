@@ -30,7 +30,7 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v3
       with:
-        version: 6.7.2
+        version: 6.5.3
         modules: 'qtcharts'
         host: 'windows'
         target: 'desktop'
