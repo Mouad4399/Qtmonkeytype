@@ -64,6 +64,15 @@ jobs:
         mkdir -p ./lib
         mkdir -p ./plugins
         "${{ env.Qt6_Dir }}\bin\windeployqt6.exe"  ./appQtmonkeytype-cpp.exe  --libdir ./lib --plugindir ./plugins
+
+    - name: Copy MinGW runtime DLLs
+      run: |
+        echo "Copying MinGW runtime DLLs to app directory..."
+        cp /mingw64/bin/libstdc++-6.dll . || cp /c/msys64/mingw64/bin/libstdc++-6.dll .
+        cp /mingw64/bin/libgcc_s_seh-1.dll . || cp /c/msys64/mingw64/bin/libgcc_s_seh-1.dll .
+        cp /mingw64/bin/libwinpthread-1.dll . || cp /c/msys64/mingw64/bin/libwinpthread-1.dll .
+        echo "DLLs in app directory:"
+        ls -l *.dll
         
     - name: Upload EXE
       uses: actions/upload-artifact@v4
