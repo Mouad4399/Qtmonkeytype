@@ -6,43 +6,54 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-windows:
+  build:
+
     runs-on: windows-latest
-    permissions:
-      contents: write
-
+    defaults:
+        run:
+            shell: msys2 {0}
+            
     steps:
-    - uses: actions/checkout@v4
-
-    - name: Set up Qt
-      uses: jurplel/install-qt-action@v4
+    - uses: msys2/setup-msys2@v2
       with:
-        version: '6.5.3'
+        msystem: mingw64
+        update: true
+        install: >-
+          mingw-w64-x86_64-toolchain
+          git
+          make
+        pacboy: >-
+          toolchain:p
+          cmake:p
+          ninja:p
+    
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: 6.5.3
+        modules: 'qtcharts'
         host: 'windows'
         target: 'desktop'
-        arch: 'win64_msvc2019_64'  # Use MSVC 2019
-        modules: 'qtcharts'
-
-    - name: Add Qt bin to PATH
-      run: echo "$Env:Qt6_DIR/bin" | Out-File -FilePath $env:GITHUB_PATH -Append
-
-    - name: Configure CMake
-      run: |
-        mkdir build
+        arch: 'win64_mingw'
+        tools: 'tools_mingw,qt.tools.win64_mingw810'
+        install-deps: 'true'
+       
+    - uses: actions/checkout@v4
+    - name: cmake
+      env:
+        CMAKE_PREFIX_PATH: ${{env.Qt6_Dir}}
+      run: | 
+        mkdir -p ./build
         cmake -S . -B . && cmake --build . --target all
-
-    # - name: Build
-    #   run: |
-    #     cd build
-    #     cmake --build . --config Release
+        
 
     - name: Deploy with windeployqt
       run: |
-        cd build/Release
-        windeployqt6.exe ./
+        cd build
+        D:\a\Qtmonkeytype\Qt\6.5.3\mingw_64\bin\windeployqt6.exe ./
 
     - name: Upload EXE
       uses: actions/upload-artifact@v4
       with:
         name: windows-exe
-        path: build/Release/*.exe
+        path: build/*.exe
