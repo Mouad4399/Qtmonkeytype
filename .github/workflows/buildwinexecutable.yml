@@ -47,6 +47,11 @@ jobs:
         cmake -S . -B . && cmake --build . --target all
         
 
+    - name: Check for windeployqt6.exe
+      run: |
+        echo "Qt6_Dir is: ${{ env.Qt6_Dir }}"
+        dir "${{ env.Qt6_Dir }}\bin"
+
     - name: Deploy with windeployqt
       run: |
         cd build
