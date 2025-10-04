@@ -46,7 +46,7 @@ jobs:
     - name: Deploy with windeployqt
       run: |
         cd build
-        /mingw64/qt6/bin/windeployqt.exe --release --qmldir ../ ./appQtmonkeytype-cpp.exe
+        /mingw64/bin/windeployqt.exe --release --qmldir ../ ./appQtmonkeytype-cpp.exe
 
     - name: Create ZIP archive
       run: |
