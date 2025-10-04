@@ -29,11 +29,14 @@ jobs:
           mingw-w64-x86_64-qt6-base
           mingw-w64-x86_64-qt6-charts
 
+
     - name: Configure CMake
       run: |
         mkdir build
         cd build
-        cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
+        cmake .. -G "MinGW Makefiles" `
+          -DCMAKE_BUILD_TYPE=Release `
+          -DCMAKE_PREFIX_PATH=" C:/mingw64/qt6"
       shell: powershell
 
     - name: Build
