@@ -28,6 +28,7 @@ jobs:
           mingw-w64-x86_64-cmake
           mingw-w64-x86_64-qt6-base
           mingw-w64-x86_64-qt6-charts
+          mingw-w64-x86_64-qt6-declarative
 
 
     - name: Configure CMake
