@@ -34,26 +34,22 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake .. -G "MinGW Makefiles" \
-          -DCMAKE_BUILD_TYPE=Release \
-          -DCMAKE_PREFIX_PATH="/c/msys64/mingw64/qt6" \
-          -DCMAKE_C_COMPILER="/c/msys64/mingw64/bin/gcc.exe" \
-          -DCMAKE_CXX_COMPILER="/c/msys64/mingw64/bin/g++.exe"
+        cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="/mingw64/qt6"
 
     - name: Build
       run: |
         cd build
-        mingw32-make
+        make
 
     - name: Deploy with windeployqt
       run: |
         cd build
-        C:/msys64/mingw64/qt6/bin/windeployqt.exe --release --qmldir ../ ./appQtmonkeytype-cpp.exe
-      shell: powershell
+        /mingw64/qt6/bin/windeployqt.exe --release --qmldir ../ ./appQtmonkeytype-cpp.exe
 
     - name: Create ZIP archive
       run: |
-        Compress-Archive -Path build/* -DestinationPath Qtmonkeytype-cpp-windows.zip
+        cd build
+        7z a ../Qtmonkeytype-cpp-windows.zip *
       shell: powershell
 
     - name: Upload Artifact
