@@ -7,44 +7,38 @@ on:
 
 jobs:
   build:
-
     runs-on: windows-latest
     defaults:
-        run:
-            shell: msys2 {0}
+      run:
+        shell: msys2 {0}
 
     steps:
-    - uses: msys2/setup-msys2@v2
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up MSYS2 and dependencies
+      uses: msys2/setup-msys2@v2
       with:
         msystem: mingw64
         update: true
         install: >-
-          mingw-w64-x86_64-toolchain
           git
           make
-        pacboy: >-
-          toolchain:p
-          cmake:p
-          ninja:p
-
-    - name: Set up Qt
-      uses: jurplel/install-qt-action@v4
-      with:
-        version: '6.5.3'
-        host: 'windows'
-        target: 'desktop'
-        arch: 'win64_mingw'
-        modules: 'qtcharts'
-        tools: 'tools_mingw,qt.tools.win64_mingw810'
-
-    - name: check dir
-      run: dir .
+          mingw-w64-x86_64-toolchain
+          mingw-w64-x86_64-cmake
+          mingw-w64-x86_64-qt6-base
+          mingw-w64-x86_64-qt6-charts
 
     - name: Configure CMake
       run: |
         mkdir build
         cd build
-        cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$Env:QT_ROOT_DIR"  -DCMAKE_MAKE_PROGRAM=mingw32-make -DCMAKE_C_COMPILER="$Env:IQTA_TOOLS/mingw810_64/bin/gcc.exe" -DCMAKE_CXX_COMPILER="$Env:IQTA_TOOLS/mingw810_64/bin/g++.exe"
+        cmake .. -G "MinGW Makefiles" `
+          -DCMAKE_BUILD_TYPE=Release `
+          -DCMAKE_C_COMPILER="C:/msys64/mingw64/bin/gcc.exe" `
+          -DCMAKE_CXX_COMPILER="C:/msys64/mingw64/bin/g++.exe" `
+          -DCMAKE_PREFIX_PATH="C:/msys64/mingw64/qt6"
+      shell: powershell
 
     - name: Build
       run: |
@@ -54,10 +48,16 @@ jobs:
     - name: Deploy with windeployqt
       run: |
         cd build
-        D:\a\Qtmonkeytype\Qt\6.5.3\mingw_64\bin\windeployqt6.exe ./
+        C:/msys64/mingw64/qt6/bin/windeployqt.exe --release --qmldir ../ ./appQtmonkeytype-cpp.exe
+      shell: powershell
 
-    - name: Upload EXE
+    - name: Create ZIP archive
+      run: |
+        Compress-Archive -Path build/* -DestinationPath Qtmonkeytype-cpp-windows.zip
+      shell: powershell
+
+    - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: windows-exe
-        path: ./
+        name: Qtmonkeytype-cpp-windows
+        path: Qtmonkeytype-cpp-windows.zip
