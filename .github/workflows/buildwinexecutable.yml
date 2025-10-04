@@ -33,11 +33,7 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake .. -G "MinGW Makefiles" `
-          -DCMAKE_BUILD_TYPE=Release `
-          -DCMAKE_C_COMPILER="C:/msys64/mingw64/bin/gcc.exe" `
-          -DCMAKE_CXX_COMPILER="C:/msys64/mingw64/bin/g++.exe" `
-          -DCMAKE_PREFIX_PATH="C:/msys64/mingw64/qt6"
+        cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
       shell: powershell
 
     - name: Build
