@@ -47,7 +47,10 @@ jobs:
     - name: Deploy with windeployqt
       run: |
         cd build
-        /mingw64/bin/windeployqt6.exe .
+        cp /mingw64/bin/Qt6Core.dll .
+        cp /mingw64/bin/Qt6Gui.dll .
+        cp /mingw64/bin/Qt6Widgets.dll .
+        cp /mingw64/bin/Qt6Qml.dll .
 
     - name: Create ZIP archive
       run: |
