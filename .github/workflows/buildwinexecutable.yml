@@ -30,6 +30,7 @@ jobs:
           mingw-w64-x86_64-qt6-charts
           mingw-w64-x86_64-qt6-declarative
           mingw-w64-x86_64-qt6-tools
+          mingw-w64-x86_64-qt6-translations
 
 
     - name: Configure CMake
@@ -46,7 +47,7 @@ jobs:
     - name: Deploy with windeployqt
       run: |
         cd build
-        /mingw64/bin/windeployqt6.exe appQtmonkeytype-cpp.exe
+        /mingw64/bin/windeployqt6.exe --release --qmldir ../ appQtmonkeytype-cpp.exe
 
     - name: Create ZIP archive
       run: |
