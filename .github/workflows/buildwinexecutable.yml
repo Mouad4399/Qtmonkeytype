@@ -43,6 +43,13 @@ jobs:
         cd build
         make
 
+    - name: Find windeployqt
+      run: |
+        echo "Searching for windeployqt..."
+        find /mingw64 -name "*windeployqt*.exe"
+        echo "Listing /mingw64/bin contents..."
+        ls -l /mingw64/bin | grep qt
+
     - name: Deploy with windeployqt
       run: |
         cd build
