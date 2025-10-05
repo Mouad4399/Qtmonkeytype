@@ -44,10 +44,15 @@ jobs:
         cd build
         mingw32-make
 
+    - name: Add MSYS2 to PATH
+      run: echo "C:/msys64/mingw64/bin" >> $env:GITHUB_PATH
+      shell: powershell
+
     - name: Deploy with windeployqt
       run: |
         cd build
-        /mingw64/bin/windeployqt6.exe  appQtmonkeytype-cpp.exe
+        windeployqt6.exe --qmldir ../ appQtmonkeytype-cpp.exe
+      shell: powershell
 
     - name: Create ZIP archive
       run: |
