@@ -43,17 +43,10 @@ jobs:
         cd build
         make
 
-    - name: Find windeployqt
-      run: |
-        echo "Searching for windeployqt..."
-        find /mingw64 -name "*windeployqt*.exe"
-        echo "Listing /mingw64/bin contents..."
-        ls -l /mingw64/bin | grep qt
-
     - name: Deploy with windeployqt
       run: |
         cd build
-        /mingw64/bin/windeployqt.exe --release --qmldir ../ ./appQtmonkeytype-cpp.exe
+        /mingw64/bin/windeployqt6.exe --release --qmldir ../ ./appQtmonkeytype-cpp.exe
 
     - name: Create ZIP archive
       run: |
