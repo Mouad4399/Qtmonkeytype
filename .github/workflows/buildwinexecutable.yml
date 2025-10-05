@@ -44,23 +44,14 @@ jobs:
         cd build
         mingw32-make
 
-    - name: Search for windeployqt
+    - name: Search 
       run: |
-        where windeployqt
-        where windeployqt6.exe
-        where windeployqt-qt6.exe
-      shell: powershell
-
-    - name: Search files
-      run: |
-        dir "C:\msys64\mingw64\bin\*"
-      shell: powershell
+        ls .
 
     - name: Deploy with windeployqt
       run: |
         cd build
-        "C:\msys64\mingw64\bin\windeployqt6.exe" "D:\a\Qtmonkeytype\Qtmonkeytype\build\appQtmonkeytype-cpp.exe"
-      shell: powershell
+        /mingw64/bin/windeployqt6.exe appQtmonkeytype-cpp.exe
 
     - name: Create ZIP archive
       run: |
