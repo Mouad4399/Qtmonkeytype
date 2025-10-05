@@ -44,18 +44,23 @@ jobs:
         cd build
         mingw32-make
 
+    - name: Search for windeployqt
+      run: |
+        where windeployqt
+        where windeployqt6.exe
+        where windeployqt-qt6.exe
+      shell: powershell
+
+    - name: Search files
+      run: |
+        dir "C:\msys64\mingw64\bin\*"
+      shell: powershell
+
     - name: Deploy with windeployqt
       run: |
         cd build
-        cp /mingw64/bin/Qt6Core.dll .
-        cp /mingw64/bin/Qt6Gui.dll .
-        cp /mingw64/bin/Qt6Widgets.dll .
-        cp /mingw64/bin/Qt6Qml.dll .
-        cp /mingw64/bin/Qt6Network.dll .
-        cp /mingw64/bin/libb2-*.dll .
-        cp /mingw64/bin/libdouble-conversion.dll .
-        cp /mingw64/bin/libicuin*.dll .
-
+        "C:\msys64\mingw64\bin\windeployqt6.exe" "D:\a\Qtmonkeytype\Qtmonkeytype\build\appQtmonkeytype-cpp.exe"
+      shell: powershell
 
     - name: Create ZIP archive
       run: |
