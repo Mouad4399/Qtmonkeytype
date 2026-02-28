@@ -1,66 +1,55 @@
-name: Build Qt App EXE
+name: Build Windows Release
 
 on:
   release:
     types: [created]
-  workflow_dispatch:
 
 jobs:
-  build:
+  build-windows:
     runs-on: windows-latest
-    defaults:
-      run:
-        shell: msys2 {0}
+    permissions:
+      contents: write
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Set up MSYS2 and dependencies
-      uses: msys2/setup-msys2@v2
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
       with:
-        msystem: mingw64
-        update: true
-        install: >-
-          git
-          make
-          mingw-w64-x86_64-toolchain
-          mingw-w64-x86_64-cmake
-          mingw-w64-x86_64-qt6-base
-          mingw-w64-x86_64-qt6-charts
-          mingw-w64-x86_64-qt6-declarative
-          mingw-w64-x86_64-qt6-tools
-          mingw-w64-x86_64-qt6-translations
+        version: '6.5.2'
+        host: 'windows'
+        target: 'desktop'
+        arch: 'win64_msvc2019_64'
 
+    - name: Setup MSVC
+      uses: ilammy/msvc-dev-cmd@v1
 
-    - name: Configure CMake
+    - name: Build Application
+      shell: cmd
       run: |
         mkdir build
         cd build
-        cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="/mingw64/qt6"
+        cmake .. -DCMAKE_BUILD_TYPE=Release
+        cmake --build . --config Release
 
-    - name: Build
-      run: |
-        cd build
-        mingw32-make
-
-    - name: Search 
-      run: |
-        ls .
-
-    - name: Deploy with windeployqt
-      run: |
-        cd build
-        /mingw64/bin/windeployqt6.exe appQtmonkeytype-cpp.exe
-
-    - name: Create ZIP archive
-      run: |
-        cd build
-        7z a ../Qtmonkeytype-cpp-windows.zip *
+    - name: Deploy Qt Dependencies (windeployqt)
       shell: powershell
+      run: |
+        # --qmldir . tells windeployqt to scan the repository root for your .qml files
+        # It targets your specific executable name from CMake
+        windeployqt --release --qmldir . build\Release\appQtmonkeytype-cpp.exe
 
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v4
+    - name: Package Application (Zip)
+      shell: powershell
+      run: |
+        # Zip the entire Release folder (the .exe + all the deployed Qt DLLs and QML folders)
+        $tagName = "${{ github.event.release.tag_name }}"
+        Compress-Archive -Path build\Release\* -DestinationPath "appQtmonkeytype-cpp-${tagName}-Windows.zip"
+
+    - name: Upload Windows Artifact
+      uses: softprops/action-gh-release@v1
       with:
-        name: Qtmonkeytype-cpp-windows
-        path: Qtmonkeytype-cpp-windows.zip
+        files: 'appQtmonkeytype-cpp-*-Windows.zip'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
